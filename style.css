@@ -1,0 +1,176 @@
+@font-face {
+    font-family: abastina;
+    src: url('external/fonts/abastina.otf');
+}
+
+@font-face {
+    font-family: josefin;
+    src: url('external/fonts/josefin.ttf');
+}
+
+@font-face {
+    font-family: SourceCodePro-Regular;
+    src: url('external/fonts/SourceCodePro-Regular.ttf');
+}
+
+.titleAbastina {
+    font-family: abastina;
+    color: rgb(0, 107, 93);
+    font-size: 21px;
+    text-align: center;
+}
+
+.hiddenlogo {
+    display: none;
+}
+
+.hiddencontent {
+    display: none;
+}
+
+.hiddeninfo {
+    display: none;
+}
+
+th {
+    font-family: josefin;
+    font-size: 8px;
+    text-align: left;
+}
+
+small {
+    font-family: josefin;
+    font-size: 13px;
+    text-align: left;
+}
+
+.eng-small {
+    font-family: josefin;
+    font-size: 11px;
+    text-align: left;
+}
+
+span {
+    font-family: josefin;
+}
+
+#monitor {
+    font-family: SourceCodePro-Regular;
+    font-size: 13px;
+    color: rgb(0, 107, 93);
+}
+
+a {
+    font-family: josefin;
+}
+
+a.avaz {
+    color: rgb(0, 107, 93);
+}
+
+a.avazKaydet {
+    color: rgb(0, 107, 93);
+}
+
+a.avazDur {
+    color: rgb(0, 107, 93);
+}
+
+a:link {
+    text-decoration: none;
+    color: rgb(0, 107, 93);
+}
+
+a:visited {
+    text-decoration: none;
+    color: rgb(0, 107, 93);
+}
+
+a:hover {
+    text-decoration: none;
+    color: rgb(41, 170, 2);
+    cursor: pointer;
+}
+
+a:active {
+    text-decoration: none;
+    color: rgb(0, 107, 93);
+}
+
+body {
+    color: #222;
+    background-color: #ccc;
+}
+
+#outer {
+    width: 100%;
+    text-align: center;
+}
+
+#maskCanvas {
+    outline: none;
+}
+
+.slider {
+    -webkit-appearance: none;
+    width: 64px;
+    height: 0px;
+    border-radius: 0px;
+    background: #777777;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%; 
+    background: rgb(0, 107, 93);
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgb(0, 107, 93);
+    cursor: pointer;
+}
+
+.slider::-webkit-slider-thumb:hover {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%; 
+    background: rgb(41, 170, 2);
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb:hover {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgb(41, 170, 2);
+    cursor: pointer;
+}
+
+blockquote {
+    display: table;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    margin-top: 16px;
+    margin-bottom: 16px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #ddd;
+    width: 100%;
+}
+
+audio {
+    display: none;
+}

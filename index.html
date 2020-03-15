@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <title>yakamoz.io</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="theme-color" content="#888888">
+    <meta name="msapplication-navbutton-color" content="#888888">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#888888">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="outer">
+        <div class="hiddenlogo" id="logo">
+            <img src="logo.png" style="width:64px;height:64px;" alt="yakamoz.io logo by Sinan Özer">
+            <br>
+        </div>
+
+        <div class="hiddeninfo">
+            <canvas id="maskCanvas"></canvas>
+        </div>
+
+        <div class="hiddencontent">
+            <div class="titleAbastina">yakamoz - seçenekler [ controls ]</div>
+
+            <blockquote>
+                <div class="titleAbastina">duygu durumu <span class="titleAbastina">[ mood ]</span></div>
+                <table style="width:300px;margin-left:auto;margin-right:auto;">
+                    <tr>
+                        <th>[00]<input type="range" min="-200" max="200" value="0" class="slider" id="emotion-00"></th>
+                        <th>[01]<input type="range" min="-200" max="200" value="0" class="slider" id="emotion-01"></th>
+                        <th>[02]<input type="range" min="-200" max="200" value="0" class="slider" id="emotion-02"></th>
+                        <th>[03]<input type="range" min="-200" max="200" value="0" class="slider" id="emotion-03"></th>
+                    </tr>
+                    <tr>
+                        <th>[04]<input type="range" min="-200" max="200" value="0" class="slider" id="emotion-04"></th>
+                        <th>[05]<input type="range" min="-200" max="200" value="0" class="slider" id="emotion-05"></th>
+                        <th>[06]<input type="range" min="-200" max="200" value="0" class="slider" id="emotion-06"></th>
+                        <th>[07]<input type="range" min="-200" max="200" value="0" class="slider" id="emotion-07"></th>
+                    </tr>
+                    <tr>
+                        <th>[08]<input type="range" min="-200" max="200" value="0" class="slider" id="emotion-08"></th>
+                        <th>[09]<input type="range" min="-200" max="200" value="0" class="slider" id="emotion-09"></th>
+                        <th>[10]<input type="range" min="-200" max="200" value="0" class="slider" id="emotion-10"></th>
+                        <th>[11]<input type="range" min="-200" max="200" value="0" class="slider" id="emotion-11"></th>
+                    </tr>
+                    <tr>
+                        <th>[12]<input type="range" min="-200" max="200" value="0" class="slider" id="emotion-12"></th>
+                        <th>[13]<input type="range" min="-200" max="200" value="0" class="slider" id="emotion-13"></th>
+                        <th>[14]<input type="range" min="-200" max="200" value="0" class="slider" id="emotion-14"></th>
+                        <th>[15]<input type="range" min="-200" max="200" value="0" class="slider" id="emotion-15"></th>
+                    </tr>
+                </table>
+            </blockquote>
+            <blockquote>
+                <div class="titleAbastina">avaz <span class="titleAbastina">[ voice ]</span></div>
+                <span>mikrofonu <a class="avaz">aç</a> // <a class="avaz">enable</a> mic</span>
+                <br>
+                <span id="monitor">
+                    ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+                </span>
+                <br>
+                <span>2 saniye <a class="avazKaydet">kaydet</a> // <a class="avazKaydet">record</a> 2 seconds</span>
+                <br>
+                <span id="avazVaziyet">bekliyor // waiting</span>
+            </blockquote>
+
+            <small><a target="_blank" href=https://www.behance.net/sinanozer>Sinan Özer</a> tasarladı logoyu. Ellere
+                sağlık.</small>
+            <small class="eng-small">[<a target="_blank" href=https://www.behance.net/sinanozer>Sinan Özer</a> designed
+                the
+                logo]</small>
+            <br>
+            <small>Gerisini <a target="_blank" href="http://leventtasel.com">ben</a> yaptim.</small>
+            <small class="eng-small">[Rest is done by <a target="_blank" href="http://leventtasel.com">me</a>.]</small>
+            <br>
+            <small>Nedir <a target="_blank" href="http://yakamoz.io/yakamoz_nfo.html">bu</a>?</small>
+            <small class="eng-small">[WTF is <a target="_blank"
+                    href="http://yakamoz.io/yakamoz_nfo.html">this</a>?]</small>
+        </div>
+    </div>
+    <script src="external/js/jquery-3.4.1.min.js"></script>
+    <script src="external/js/jquery-ui.min.js"></script>
+    <script src="external/js/meyda.js"></script>
+    <script src="external/js/RecordRTC.min.js"></script>
+
+    <script type="module">
+        import * as THREE from './external/js/three.module.js';
+        import { OrbitControls } from './external/js/OrbitControls.js';
+
+
+        var yakamozLoop = false;
+        var yakamozProc = false;
+
+        var loopSecs = 2;
+        var animFPS = 30;
+
+        var avazEnabled = false;
+        var audioContext;
+        var recordedAudio
+        var mediaConstraints = { audio: true, video: false };
+
+        var maskCanvasUnit = 256;
+        var container, scene, camera, renderer, maskBufferGeo, maskMesh;
+        var maskData;
+
+        function enableAvaz() {
+            if (avazEnabled) return;  // TODO
+            navigator.mediaDevices.getUserMedia(mediaConstraints).then((str) => {
+                audioContext = new window.AudioContext();
+                var analyser = audioContext.createAnalyser();
+                var stream = str;
+                var source = audioContext.createMediaStreamSource(stream);
+                source.connect(analyser);
+
+                var analyzer = Meyda.createMeydaAnalyzer({
+                    "type": "audio",
+                    "audioContext": audioContext,
+                    "source": source,
+                    "inputs": 1,
+                    "sampleRate": 16000,
+                    "featureExtractors": ['mfcc'],
+                    "numberOfMFCCCoefficients": 32,
+                    "callback": features => {
+                        var lightShade = "░";
+                        var midShade = "▒";
+                        var darkShade = "▓";
+                        var monitor = "";
+                        features.mfcc.forEach(e => {
+                            monitor += e < -.33 ? lightShade : (e < .33 ? midShade : darkShade);
+                        });
+                        document.getElementById('monitor').innerHTML = monitor;
+                    }
+                });
+                analyzer.start();
+            });
+            avazEnabled = true;
+            if (!yakamozLoop) document.getElementById('avazVaziyet').innerHTML =
+                'dinliyor // listening';
+        }
+        $('a.avaz').click(function (e) { e.preventDefault(); enableAvaz(); return false; });
+
+        function record() {
+            if (yakamozLoop) return;
+            if (yakamozProc) return;
+            navigator.mediaDevices.getUserMedia({
+                video: false,
+                audio: true
+            }).then(async function (stream) {
+                var recorder = new StereoAudioRecorder(stream, {});
+                recorder.record();
+
+                document.getElementById('avazVaziyet').innerHTML = 'kaydediyor // recording';
+
+                var sleep = m => new Promise(r => setTimeout(r, m));
+                await sleep(1000 * loopSecs);
+
+                window.setTimeout(function () {
+                    recorder.stop(function () {
+                        yakamozProc = true;
+                        document.getElementById('avazVaziyet').innerHTML = 'işliyor // processing';
+                        var audioBlob = recorder.blob;
+                        var audioUrl = URL.createObjectURL(audioBlob);
+                        recordedAudio = new Audio(audioUrl);
+
+                        var reader = new window.FileReader();
+                        reader.readAsDataURL(audioBlob);
+                        reader.onloadend = function () {
+                            var formData = new FormData();
+                            formData.append('frameCount', loopSecs * animFPS)
+                            formData.append('audio', reader.result)
+                            formData.append('mood', JSON.stringify(
+                                [
+                                    $("#emotion-00").val() / 200.,
+                                    $("#emotion-01").val() / 200.,
+                                    $("#emotion-02").val() / 200.,
+                                    $("#emotion-03").val() / 200.,
+                                    $("#emotion-04").val() / 200.,
+                                    $("#emotion-05").val() / 200.,
+                                    $("#emotion-06").val() / 200.,
+                                    $("#emotion-07").val() / 200.,
+                                    $("#emotion-08").val() / 200.,
+                                    $("#emotion-09").val() / 200.,
+                                    $("#emotion-10").val() / 200.,
+                                    $("#emotion-11").val() / 200.,
+                                    $("#emotion-12").val() / 200.,
+                                    $("#emotion-13").val() / 200.,
+                                    $("#emotion-14").val() / 200.,
+                                    $("#emotion-15").val() / 200.,
+                                ]
+                            ))
+                            $.ajax({
+                                type: "POST",
+                                url: "mask",
+                                data: formData,
+                                cache: false,
+                                processData: false,
+                                contentType: false,
+                                enctype: 'multipart/form-data'
+                            }).then(function (data) {
+                                maskData = JSON.parse(data);
+
+                                yakamozLoop = true;
+                                yakamozProc = false;
+                                recordedAudio.addEventListener('ended', function () {
+                                    this.currentTime = 0;
+                                    if (yakamozLoop) this.play();
+                                }, false);
+                                recordedAudio.play();
+
+                                function stop() {
+                                    yakamozLoop = false;
+                                    recordedAudio.pause();
+                                    recordedAudio.currentTime = 0;
+                                    document.getElementById('avazVaziyet').innerHTML = 'dinliyor // listening';
+                                }
+                                document.getElementById('avazVaziyet').innerHTML =
+                                    '<a class="avazDur">dur</a> // <a class="avazDur">stop</a>';
+                                $('a.avazDur').click(function (e) { e.preventDefault(); stop(); return false; });
+                            });
+                        };
+                    });
+                }, 1000 * loopSecs);
+            });
+        }
+        $('a.avazKaydet').click(function (e) { e.preventDefault(); record(); return false; });
+
+        function setMaskNeutral() {
+            $.ajax({
+                url: "maskNeutral"
+            }).then(function (data) {
+                var buff = new Float32Array(JSON.parse(data)[0]);
+                maskBufferGeo.setAttribute('position', new THREE.BufferAttribute(buff, 3));
+                maskBufferGeo.attributes.position.needsUpdate = true;
+                maskBufferGeo.computeBoundingSphere();
+            });
+        }
+
+        function setMask() {
+            var frameNum = Math.floor(recordedAudio.currentTime / animFPS);
+            var buff = new Float32Array(maskData[frameNum][0].filter(x => x));
+            maskBufferGeo.setAttribute('position', new THREE.BufferAttribute(buff, 3));
+            maskBufferGeo.attributes.position.needsUpdate = true;
+            maskBufferGeo.computeBoundingSphere();
+        }
+
+        function init() {
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xcccccc);
+            scene.fog = new THREE.Fog(0xcccccc, 50, 100);
+
+            camera = new THREE.PerspectiveCamera(34, maskCanvasUnit / maskCanvasUnit, 1, 100);
+            camera.position.set(0, 0, 4.5);
+
+            scene.add(new THREE.AmbientLight(0x333333));
+
+            var light = new THREE.DirectionalLight(0xdfebff, 1);
+            light.position.set(0, 20, 10);
+            light.position.multiplyScalar(1.3);
+
+            light.castShadow = true;
+
+            light.shadow.mapSize.width = 1024;
+            light.shadow.mapSize.height = 1024;
+
+            var d = 300;
+
+            light.shadow.camera.left = - d;
+            light.shadow.camera.right = d;
+            light.shadow.camera.top = d;
+            light.shadow.camera.bottom = - d;
+
+            light.shadow.camera.far = 1000;
+
+            scene.add(light);
+
+            function setMaskIndices() {
+                $.ajax({
+                    url: "maskIndices"
+                }).then(function (data) {
+                    maskBufferGeo.setIndex(JSON.parse(data));
+                });
+            }
+
+            maskBufferGeo = new THREE.BufferGeometry();
+            setMaskIndices();
+            setMaskNeutral();
+            var material = new THREE.MeshPhongMaterial();
+            material.flatShading = true;
+            maskMesh = new THREE.Mesh(maskBufferGeo, material);
+            scene.add(maskMesh);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, canvas: document.getElementById('maskCanvas') });
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(maskCanvasUnit, maskCanvasUnit);
+
+            renderer.outputEncoding = THREE.sRGBEncoding;
+
+            renderer.shadowMap.enabled = true;
+
+            var controls = new OrbitControls(camera, renderer.domElement);
+            controls.maxPolarAngle = Math.PI * 0.75;
+            controls.minPolarAngle = Math.PI * 0.25;
+            controls.maxAzimuthAngle = Math.PI * 0.25;
+            controls.minAzimuthAngle = Math.PI * -0.25;
+            controls.enablePan = false;
+            controls.enableZoom = false;
+
+            window.addEventListener('resize', onWindowResize, false);
+        }
+
+        function onWindowResize() {
+            camera.aspect = maskCanvasUnit / maskCanvasUnit;
+            camera.updateProjectionMatrix();
+
+            renderer.setSize(maskCanvasUnit, maskCanvasUnit);
+        }
+
+        function animate() {
+            setTimeout(function () {
+                requestAnimationFrame(animate);
+            }, 1000 / animFPS);
+
+            if (yakamozLoop) {
+                setMask();
+            }
+
+            render();
+        }
+
+        function render() {
+            renderer.render(scene, camera);
+        }
+
+        $(document).ready(function () {
+            $("#emotion-00").val(Math.floor((Math.random() * 400) - 200));
+            $("#emotion-01").val(Math.floor((Math.random() * 400) - 200));
+            $("#emotion-02").val(Math.floor((Math.random() * 400) - 200));
+            $("#emotion-03").val(Math.floor((Math.random() * 400) - 200));
+            $("#emotion-04").val(Math.floor((Math.random() * 400) - 200));
+            $("#emotion-05").val(Math.floor((Math.random() * 400) - 200));
+            $("#emotion-06").val(Math.floor((Math.random() * 400) - 200));
+            $("#emotion-07").val(Math.floor((Math.random() * 400) - 200));
+            $("#emotion-08").val(Math.floor((Math.random() * 400) - 200));
+            $("#emotion-09").val(Math.floor((Math.random() * 400) - 200));
+            $("#emotion-10").val(Math.floor((Math.random() * 400) - 200));
+            $("#emotion-11").val(Math.floor((Math.random() * 400) - 200));
+            $("#emotion-12").val(Math.floor((Math.random() * 400) - 200));
+            $("#emotion-13").val(Math.floor((Math.random() * 400) - 200));
+            $("#emotion-14").val(Math.floor((Math.random() * 400) - 200));
+            $("#emotion-15").val(Math.floor((Math.random() * 400) - 200));
+
+            $("#emotion-00").val();
+            $("#emotion-01").val();
+            $("#emotion-02").val();
+            $("#emotion-03").val();
+            $("#emotion-04").val();
+            $("#emotion-05").val();
+            $("#emotion-06").val();
+            $("#emotion-07").val();
+            $("#emotion-08").val();
+            $("#emotion-09").val();
+            $("#emotion-10").val();
+            $("#emotion-11").val();
+            $("#emotion-12").val();
+            $("#emotion-13").val();
+            $("#emotion-14").val();
+            $("#emotion-15").val();
+
+            $(".hiddenlogo").fadeIn(500).removeClass("hiddenlogo");
+            $(".hiddencontent").fadeIn(4000).removeClass("hiddencontent");
+            $(".hiddeninfo").fadeIn(5000).removeClass("hiddeninfo");
+            init();
+            animate();
+        });
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,4 @@
+temp*
+*.pt
+.mypy*
+__pycache__
