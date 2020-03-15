@@ -12,11 +12,12 @@ if __name__ == '__main__':
 
     MODEL_CP_PATH = os.path.join(
         ROOT,
-        '/20_03_15_08_34_12/',
-        '20_03_15_08_34_12_E00100.pth'
+        'temp',
+        '20_03_15_08_34_12',
+        '20_03_15_08_34_12_E00350.pth'
     )
 
-    model = surat.Model(1)
+    model = surat.Model(25634)  # TODO
     model.load_state_dict(torch.load(
         MODEL_CP_PATH,
         # for cpu
