@@ -104,6 +104,11 @@ def maskNeutral():
     return json.dumps(neutral)
 
 
+@route('/')
+def index():
+    return static_file('index.html', os.path.join(ROOT, 'static'))
+
+
 @route('/<staticFile>')
 def staticStuff(staticFile):
     return static_file(staticFile, os.path.join(ROOT, 'static'))
