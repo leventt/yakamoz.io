@@ -49,14 +49,14 @@ def inference(frameCount, audio, mood):
         window_type='hanning',
         num_ceps=32,
         num_mel_bins=64,
-        frame_length=64,
-        frame_shift=32
+        frame_length=16,
+        frame_shift=8
     )
     MFCCLen = MFCC.size()[0]
 
     allMFCC = torch.Tensor([])
     for i in range(frameCount):
-        audioIdxRoll = int((i / frameCount) * MFCCLen)
+        audioIdxRoll = int(i * (MFCCLen / frameCount))
         allMFCC = torch.cat(
             (
                 allMFCC,
@@ -80,8 +80,8 @@ def inference(frameCount, audio, mood):
 
     frames = tracedScript(
         allMFCC.view(-1, 1, 64, 32),
-        # torch.Tensor(mood).float().repeat(frameCount)
-        tracedScript.mood[100:100 + frameCount]  # DEBUG
+        torch.Tensor(mood).float().repeat(frameCount)
+        # tracedScript.mood[100:100 + frameCount]  # DEBUG
     ).view(-1, 3) * 2.
     # blender has a different coordinate system than three.js
     frames = torch.cat(
