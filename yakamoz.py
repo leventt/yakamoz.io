@@ -5,6 +5,7 @@ import torchaudio
 import base64
 import io
 import tempfile
+import bottle
 from bottle import run
 from bottle import route
 from bottle import post
@@ -101,25 +102,4 @@ def maskNeutral():
     return json.dumps(neutral)
 
 
-@route('/')
-def index():
-    return static_file('index.html', ROOT)
-
-
-@route('/<staticFile>')
-def staticStuff(staticFile):
-    return static_file(staticFile, ROOT)
-
-
-@route('/external/js/<staticFile>')
-def externalJS(staticFile):
-    return static_file(staticFile, os.path.join(ROOT, 'external/js/'))
-
-
-@route('/external/fonts/<staticFile>')
-def externalFonts(staticFile):
-    return static_file(staticFile, os.path.join(ROOT, 'external/fonts/'))
-
-
-if __name__ == '__main__':
-    run(server='bjoern')
+app = bottle.default_app()

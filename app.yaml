@@ -1,1 +1,17 @@
+application: yakamoz
+version: 1
 runtime: python37
+api_version: 1
+
+handlers:
+- url: /.*
+  static_dir: static
+
+- url: /mask
+  script: yakamoz.app
+
+- url: /maskIndices
+  script: yakamoz.app
+
+- url: /maskNeutral
+  script: yakamoz.app
