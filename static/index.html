@@ -238,12 +238,16 @@
             });
         }
 
+        var frameNum = 0;
         function setMask() {
-            var frameNum = Math.floor(recordedAudio.currentTime / animFPS);
+            if (frameNum >= maskData.length) frameNum = 0;
+
             var buff = new Float32Array(maskData[frameNum][0].filter(x => x));
             maskBufferGeo.setAttribute('position', new THREE.BufferAttribute(buff, 3));
             maskBufferGeo.attributes.position.needsUpdate = true;
             maskBufferGeo.computeBoundingSphere();
+
+            frameNum += 1;
         }
 
         function init() {
