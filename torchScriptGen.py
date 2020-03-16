@@ -9,6 +9,7 @@ if __name__ == '__main__':
         'surat',
         os.path.join(ROOT, 'surat/surat.py')
     )
+    surat.DEVICE = torch.device('cpu')
 
     MODEL_CP_PATH = os.path.join(
         ROOT,
