@@ -54,36 +54,43 @@ def inference(frameCount, audio, mood):
     )
     MFCCLen = MFCC.size()[0]
 
-    frames = []
+    allMFCC = torch.Tensor([])
     for i in range(frameCount):
         audioIdxRoll = int((i / frameCount) * MFCCLen)
-        resultScaled = tracedScript(
-            torch.cat(
-                (
-                    torch.roll(
-                        MFCC,
-                        (audioIdxRoll * -1) + 32,
-                        dims=0,
-                    )[:32],
-                    torch.roll(
-                        MFCC,
-                        (audioIdxRoll * -1),
-                        dims=0,
-                    )[:32],
-                ),
-                dim=0,
-            ).view(1, 1, 64, 32),
-            torch.Tensor(mood).float()
-        ).view(-1, 3) * 2.
-        # blender has a different coordinate system than three.js
-        frames.append(torch.cat(
+        allMFCC = torch.cat(
             (
-                torch.index_select(resultScaled, 1, torch.LongTensor([0])),
-                torch.index_select(resultScaled, 1, torch.LongTensor([2])),
-                torch.index_select(resultScaled, 1, torch.LongTensor([1]))*-1
-            ),
-            dim=1
-        ).view(1, 8320 * 3))
+                allMFCC,
+                torch.cat(
+                    (
+                        torch.roll(
+                            MFCC,
+                            (audioIdxRoll * -1) + 32,
+                            dims=0,
+                        )[:32],
+                        torch.roll(
+                            MFCC,
+                            (audioIdxRoll * -1),
+                            dims=0,
+                        )[:32],
+                    ),
+                    dim=0,
+                ).view(1, 1, 64, 32)
+            )
+        )
+
+    frames = tracedScript(
+        allMFCC.view(-1, 1, 64, 32),
+        torch.Tensor(mood).float().repeat(frameCount)
+    ).view(-1, 3) * 2.
+    # blender has a different coordinate system than three.js
+    frames = torch.cat(
+        (
+            torch.index_select(frames, 1, torch.LongTensor([0])),
+            torch.index_select(frames, 1, torch.LongTensor([2])),
+            torch.index_select(frames, 1, torch.LongTensor([1]))*-1
+        ),
+        dim=1
+    ).view(-1, 8320 * 3).tolist()
 
     return frames
 
@@ -93,7 +100,7 @@ def mask():
     mood = json.loads(request.forms.get('mood'))
     audio = request.forms.get('audio')
     frameCount = int(float(request.forms.get('frameCount')))
-    return json.dumps(list(map(lambda x: x.tolist(), inference(frameCount, audio, mood))))
+    return json.dumps(inference(frameCount, audio, mood))
 
 
 @route('/maskIndices')

@@ -242,7 +242,7 @@
         function setMask() {
             if (frameNum >= maskData.length) frameNum = 0;
 
-            var buff = new Float32Array(maskData[frameNum][0].filter(x => x));
+            var buff = new Float32Array(maskData[frameNum].filter(x => x));
             maskBufferGeo.setAttribute('position', new THREE.BufferAttribute(buff, 3));
             maskBufferGeo.attributes.position.needsUpdate = true;
             maskBufferGeo.computeBoundingSphere();
