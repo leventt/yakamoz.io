@@ -112,5 +112,5 @@ def staticStuff(staticFile):
     return static_file(staticFile, os.path.join(ROOT, 'static'))
 
 
-app = bottle.default_app()
-# run(server='bjoern')
+if __name__ == '__main__':
+    run(server='bjoern')
