@@ -4,11 +4,5 @@ handlers:
 - url: /.*
   static_dir: static
 
-- url: /mask
-  script: yakamoz.app
-
-- url: /maskIndices
-  script: yakamoz.app
-
-- url: /maskNeutral
+- url: /auto
   script: yakamoz.app
