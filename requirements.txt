@@ -3,5 +3,5 @@ bottle==0.12.18
 certifi==2019.11.28
 numpy==1.18.1
 six==1.14.0
-torch==1.4.0
+torch==1.4.0+cpu
 torchaudio==0.4.0
