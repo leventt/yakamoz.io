@@ -20,7 +20,7 @@ if __name__ == '__main__':
     model.load_state_dict(torch.load(
         MODEL_CP_PATH,
         # for cpu
-        # map_location=torch.device('cpu')
+        map_location=torch.device('cpu')
     ))
 
     model.eval()

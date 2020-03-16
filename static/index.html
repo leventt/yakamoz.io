@@ -106,6 +106,8 @@
         var container, scene, camera, renderer, maskBufferGeo, maskMesh;
         var maskData;
 
+        var moodScale = 0.0025;
+
         function enableAvaz() {
             if (avazEnabled) return;  // TODO
             navigator.mediaDevices.getUserMedia(mediaConstraints).then((str) => {
@@ -173,22 +175,22 @@
                             formData.append('audio', reader.result)
                             formData.append('mood', JSON.stringify(
                                 [
-                                    $("#emotion-00").val() / 200.,
-                                    $("#emotion-01").val() / 200.,
-                                    $("#emotion-02").val() / 200.,
-                                    $("#emotion-03").val() / 200.,
-                                    $("#emotion-04").val() / 200.,
-                                    $("#emotion-05").val() / 200.,
-                                    $("#emotion-06").val() / 200.,
-                                    $("#emotion-07").val() / 200.,
-                                    $("#emotion-08").val() / 200.,
-                                    $("#emotion-09").val() / 200.,
-                                    $("#emotion-10").val() / 200.,
-                                    $("#emotion-11").val() / 200.,
-                                    $("#emotion-12").val() / 200.,
-                                    $("#emotion-13").val() / 200.,
-                                    $("#emotion-14").val() / 200.,
-                                    $("#emotion-15").val() / 200.,
+                                    $("#emotion-00").val() * moodScale,
+                                    $("#emotion-01").val() * moodScale,
+                                    $("#emotion-02").val() * moodScale,
+                                    $("#emotion-03").val() * moodScale,
+                                    $("#emotion-04").val() * moodScale,
+                                    $("#emotion-05").val() * moodScale,
+                                    $("#emotion-06").val() * moodScale,
+                                    $("#emotion-07").val() * moodScale,
+                                    $("#emotion-08").val() * moodScale,
+                                    $("#emotion-09").val() * moodScale,
+                                    $("#emotion-10").val() * moodScale,
+                                    $("#emotion-11").val() * moodScale,
+                                    $("#emotion-12").val() * moodScale,
+                                    $("#emotion-13").val() * moodScale,
+                                    $("#emotion-14").val() * moodScale,
+                                    $("#emotion-15").val() * moodScale,
                                 ]
                             ))
                             $.ajax({
@@ -242,7 +244,7 @@
         function setMask() {
             if (frameNum >= maskData.length) frameNum = 0;
 
-            var buff = new Float32Array(maskData[frameNum].filter(x => x));
+            var buff = new Float32Array(maskData[frameNum]);
             maskBufferGeo.setAttribute('position', new THREE.BufferAttribute(buff, 3));
             maskBufferGeo.attributes.position.needsUpdate = true;
             maskBufferGeo.computeBoundingSphere();

@@ -80,7 +80,8 @@ def inference(frameCount, audio, mood):
 
     frames = tracedScript(
         allMFCC.view(-1, 1, 64, 32),
-        torch.Tensor(mood).float().repeat(frameCount)
+        # torch.Tensor(mood).float().repeat(frameCount)
+        tracedScript.mood[100:100 + frameCount]  # DEBUG
     ).view(-1, 3) * 2.
     # blender has a different coordinate system than three.js
     frames = torch.cat(
