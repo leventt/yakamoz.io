@@ -11,10 +11,10 @@ from bottle import route
 from bottle import post
 from bottle import request
 from bottle import static_file
-from yakamoz import indices
-from yakamoz import neutral
-from yakamoz import inference
-from yakamoz import ROOT
+from main import indices
+from main import neutral
+from main import inference
+from main import ROOT
 
 
 @post('/mask')
