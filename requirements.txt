@@ -3,5 +3,5 @@ certifi==2019.11.28
 numpy==1.18.1
 six==1.14.0
 torchaudio==0.4.0
---find-links https://download.pytorch.org/whl/torch_stable.html
 torch==1.4.0+cpu
+--find-links https://download.pytorch.org/whl/torch_stable.html
