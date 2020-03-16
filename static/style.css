@@ -1,16 +1,16 @@
 @font-face {
     font-family: abastina;
-    src: url('external/fonts/abastina.otf');
+    src: url('abastina.otf');
 }
 
 @font-face {
     font-family: josefin;
-    src: url('external/fonts/josefin.ttf');
+    src: url('josefin.ttf');
 }
 
 @font-face {
     font-family: SourceCodePro-Regular;
-    src: url('external/fonts/SourceCodePro-Regular.ttf');
+    src: url('SourceCodePro-Regular.ttf');
 }
 
 .titleAbastina {

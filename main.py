@@ -104,22 +104,12 @@ def maskNeutral():
 
 @route('/')
 def index():
-    return static_file('index.html', os.path.join(ROOT, 'static'))
+    return static_file('yakamoz.html', os.path.join(ROOT, 'static'))
 
 
 @route('/<staticFile>')
 def staticStuff(staticFile):
     return static_file(staticFile, os.path.join(ROOT, 'static'))
-
-
-@route('/external/js/<staticFile>')
-def externalJS(staticFile):
-    return static_file(staticFile, os.path.join(ROOT, 'external/js/'))
-
-
-@route('/external/fonts/<staticFile>')
-def externalFonts(staticFile):
-    return static_file(staticFile, os.path.join(ROOT, 'external/fonts/'))
 
 
 app = bottle.default_app()
