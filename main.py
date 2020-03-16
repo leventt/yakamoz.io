@@ -113,3 +113,4 @@ def staticStuff(staticFile):
 
 
 app = bottle.default_app()
+# run(server='bjoern')
