@@ -1,7 +1,7 @@
 import os
 import torch
 import imp
-from yakamoz import ROOT
+from main import ROOT
 
 
 if __name__ == '__main__':
