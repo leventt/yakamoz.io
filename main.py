@@ -19,6 +19,8 @@ app = bottle.default_app()
 
 indices = (torch.Tensor(indices) - 1).tolist()
 ROOT = os.path.expanduser('~/sandbox/yakamoz.io/')
+if not os.path.exists(ROOT):
+    ROOT = os.path.dirname(__file__)
 tracedScriptPath = os.path.join(ROOT, 'yakamoz.pt')
 
 
