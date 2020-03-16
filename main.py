@@ -15,6 +15,8 @@ from indices import indices
 from neutral import neutral
 
 
+app = bottle.default_app()
+
 indices = (torch.Tensor(indices) - 1).tolist()
 ROOT = os.path.expanduser('~/sandbox/yakamoz.io/')
 tracedScriptPath = os.path.join(ROOT, 'yakamoz.pt')
@@ -114,5 +116,3 @@ def staticStuff(staticFile):
 
 if __name__ == '__main__':
     run(server='bjoern')
-
-app = bottle.default_app()
