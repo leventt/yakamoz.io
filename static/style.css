@@ -76,6 +76,10 @@ a.avazDur {
     color: rgb(0, 107, 93);
 }
 
+a.avazDevamet {
+    color: rgb(0, 107, 93);
+}
+
 a:link {
     text-decoration: none;
     color: rgb(0, 107, 93);

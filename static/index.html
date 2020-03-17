@@ -210,17 +210,26 @@
                                     this.currentTime = 0;
                                     if (yakamozLoop) this.play();
                                 }, false);
+                                recordedAudio.currentTime = 0;
                                 recordedAudio.play();
 
-                                function stop() {
+                                function resume() {
+                                    yakamozLoop = true;
+                                    recordedAudio.play();
+                                    document.getElementById('avazVaziyet').innerHTML =
+                                        '<a class="avazDur">duraklat</a> // <a class="avazDur">pause</a>';
+                                    $('a.avazDur').click(function (e) { e.preventDefault(); pause(); return false; });
+                                }
+                                function pause() {
                                     yakamozLoop = false;
                                     recordedAudio.pause();
-                                    recordedAudio.currentTime = 0;
-                                    document.getElementById('avazVaziyet').innerHTML = 'dinliyor // listening';
+                                    document.getElementById('avazVaziyet').innerHTML =
+                                        '<a class="avazDevamet">devam et</a> // <a class="avazDevamet">resume</a>';
+                                    $('a.avazDevamet').click(function (e) { e.preventDefault(); resume(); return false; });
                                 }
                                 document.getElementById('avazVaziyet').innerHTML =
-                                    '<a class="avazDur">dur</a> // <a class="avazDur">stop</a>';
-                                $('a.avazDur').click(function (e) { e.preventDefault(); stop(); return false; });
+                                    '<a class="avazDur">duraklat</a> // <a class="avazDur">pause</a>';
+                                $('a.avazDur').click(function (e) { e.preventDefault(); pause(); return false; });
                             });
                         };
                     });
