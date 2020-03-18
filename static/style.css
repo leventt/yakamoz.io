@@ -4,13 +4,13 @@
 }
 
 @font-face {
-    font-family: josefin;
-    src: url('josefin.ttf');
+    font-family: SourceCodePro-SemiBold;
+    src: url('SourceCodePro-SemiBold.ttf');
 }
 
 @font-face {
-    font-family: SourceCodePro-Regular;
-    src: url('SourceCodePro-Regular.ttf');
+    font-family: SourceCodePro-BOLD;
+    src: url('SourceCodePro-BOLD.ttf');
 }
 
 .titleAbastina {
@@ -33,57 +33,75 @@
 }
 
 th {
-    font-family: josefin;
+    font-family: SourceCodePro-SemiBold;
     font-size: 8px;
     text-align: left;
 }
 
 small {
-    font-family: josefin;
-    font-size: 13px;
-    text-align: left;
-}
-
-.eng-small {
-    font-family: josefin;
+    font-family: SourceCodePro-SemiBold;
     font-size: 11px;
     text-align: left;
 }
 
 span {
-    font-family: josefin;
+    font-family: SourceCodePro-SemiBold;
+    font-size: 11px;
+    color: rgb(59, 67, 66);
 }
 
-#monitor {
-    font-family: SourceCodePro-Regular;
-    font-size: 13px;
+#monitorRight {
+    font-family: SourceCodePro-SemiBold;
+    font-size: 11px;
+    color: rgb(0, 107, 93);
+}
+
+#monitorLeft {
+    font-family: SourceCodePro-SemiBold;
+    font-size: 11px;
     color: rgb(0, 107, 93);
 }
 
 #vaziyetMonitor {
-    font-family: SourceCodePro-Regular;
-    font-size: 8px;
-    color: rgb(0, 107, 93);
+    font-family: SourceCodePro-SemiBold;
+    font-size: 7px;
+    color: rgb(117, 148, 143);
+}
+
+table {
+    width: auto;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 a {
-    font-family: josefin;
+    color: rgb(0, 107, 93);
+    font-family: SourceCodePro-Bold;
+    font-size: 11px;
 }
 
-a.avaz {
+.avaz {
     color: rgb(0, 107, 93);
+    font-family: SourceCodePro-Bold;
+    font-size: 11px;
 }
 
-a.avazKaydet {
+.avazKaydet {
     color: rgb(0, 107, 93);
+    font-family: SourceCodePro-Bold;
+    font-size: 11px;
 }
 
-a.avazDur {
+.avazDur {
     color: rgb(0, 107, 93);
+    font-family: SourceCodePro-Bold;
+    font-size: 11px;
 }
 
-a.avazDevamet {
+.avazDevamet {
     color: rgb(0, 107, 93);
+    font-family: SourceCodePro-Bold;
+    font-size: 11px;
 }
 
 a:link {
@@ -177,8 +195,8 @@ blockquote {
     margin-bottom: 16px;
     margin-left: auto;
     margin-right: auto;
-    background-color: #ddd;
-    width: 100%;
+    /* background-color: #ddd; */
+    width: 313px;
 }
 
 audio {
