@@ -62,7 +62,7 @@
                     ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
                 </span>
                 <br>
-                <span>2 saniye <a class="avazKaydet">kaydet</a> // <a class="avazKaydet">record</a> 2 seconds</span>
+                <span>7 saniye <a class="avazKaydet">kaydet</a> // <a class="avazKaydet">record</a> 7 seconds</span>
                 <br>
                 <span id="avazVaziyet">bekliyor // waiting</span>
             </blockquote>
@@ -94,8 +94,8 @@
         var yakamozLoop = false;
         var yakamozProc = false;
 
-        var loopSecs = 2;
-        var animFPS = 30;
+        var loopSecs = 7;
+        var animFPS = 29.97;
 
         var avazEnabled = false;
         var audioContext;
@@ -106,7 +106,9 @@
         var container, scene, camera, renderer, maskBufferGeo, maskMesh;
         var maskData;
 
-        var moodScale = 0.0025;
+        var moodScale = 0.0025;  // TODO
+
+        var recordedAudioMark = 0;
 
         function enableAvaz() {
             if (avazEnabled) return;  // TODO
@@ -153,11 +155,7 @@
             }).then(async function (stream) {
                 var recorder = new StereoAudioRecorder(stream, {});
                 recorder.record();
-
                 document.getElementById('avazVaziyet').innerHTML = 'kaydediyor // recording';
-
-                var sleep = m => new Promise(r => setTimeout(r, m));
-                await sleep(1000 * loopSecs);
 
                 window.setTimeout(function () {
                     recorder.stop(function () {
@@ -171,7 +169,7 @@
                         reader.readAsDataURL(audioBlob);
                         reader.onloadend = function () {
                             var formData = new FormData();
-                            formData.append('frameCount', loopSecs * animFPS)
+                            formData.append('frameCount', Math.ceil(loopSecs * animFPS))
                             formData.append('audio', reader.result)
                             formData.append('mood', JSON.stringify(
                                 [
@@ -208,13 +206,16 @@
                                 yakamozProc = false;
                                 recordedAudio.addEventListener('ended', function () {
                                     this.currentTime = 0;
+                                    recordedAudioMark = audioContext.currentTime;
                                     if (yakamozLoop) this.play();
                                 }, false);
                                 recordedAudio.currentTime = 0;
+                                recordedAudioMark = audioContext.currentTime;
                                 recordedAudio.play();
 
                                 function resume() {
                                     yakamozLoop = true;
+                                    recordedAudioMark = audioContext.currentTime - recordedAudio.currentTime;
                                     recordedAudio.play();
                                     document.getElementById('avazVaziyet').innerHTML =
                                         '<a class="avazDur">duraklat</a> // <a class="avazDur">pause</a>';
@@ -249,16 +250,17 @@
             });
         }
 
-        var frameNum = 0;
         function setMask() {
-            if (frameNum >= maskData.length) frameNum = 0;
+            var frameNum =
+                Math.floor(((audioContext.currentTime - recordedAudioMark) * animFPS));
+            if (frameNum >= maskData.length) frameNum = maskData.length - 1;
+
+            console.log(frameNum);
 
             var buff = new Float32Array(maskData[frameNum]);
             maskBufferGeo.setAttribute('position', new THREE.BufferAttribute(buff, 3));
             maskBufferGeo.attributes.position.needsUpdate = true;
             maskBufferGeo.computeBoundingSphere();
-
-            frameNum += 1;
         }
 
         function init() {
@@ -336,7 +338,7 @@
         function animate() {
             setTimeout(function () {
                 requestAnimationFrame(animate);
-            }, 1000 / animFPS);
+            }, 1000 / (animFPS * 3));
 
             if (yakamozLoop) {
                 setMask();
