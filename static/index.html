@@ -255,8 +255,6 @@
                 Math.floor(((audioContext.currentTime - recordedAudioMark) * animFPS));
             if (frameNum >= maskData.length) frameNum = maskData.length - 1;
 
-            console.log(frameNum);
-
             var buff = new Float32Array(maskData[frameNum]);
             maskBufferGeo.setAttribute('position', new THREE.BufferAttribute(buff, 3));
             maskBufferGeo.attributes.position.needsUpdate = true;
