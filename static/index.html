@@ -23,10 +23,7 @@
         </div>
 
         <div class="hiddencontent">
-            <div class="titleAbastina">yakamoz - seçenekler [ controls ]</div>
-
             <blockquote>
-                <div class="titleAbastina">duygu durumu <span class="titleAbastina">[ mood ]</span></div>
                 <table style="width:300px;margin-left:auto;margin-right:auto;">
                     <tr>
                         <th>[00]<input type="range" min="-200" max="200" value="0" class="slider" id="emotion-00"></th>
@@ -55,15 +52,19 @@
                 </table>
             </blockquote>
             <blockquote>
-                <div class="titleAbastina">avaz <span class="titleAbastina">[ voice ]</span></div>
-                <span>mikrofonu <a class="avaz">aç</a> // <a class="avaz">enable</a> mic</span>
-                <br>
                 <span id="monitor">
                     ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
                 </span>
+                <br><br>
+                <span>mikrofonu <a class="avaz">aç</a> // <a class="avaz">enable</a> mic</span>
                 <br>
                 <span>7 saniye <a class="avazKaydet">kaydet</a> // <a class="avazKaydet">record</a> 7 seconds</span>
-                <br>
+            </blockquote>
+            <blockquote>
+                <span id="vaziyetMonitor">
+                    ▜▛<br>▟▙
+                </span>
+                <br><br>
                 <span id="avazVaziyet">bekliyor // waiting</span>
             </blockquote>
 
@@ -102,7 +103,7 @@
         var recordedAudio
         var mediaConstraints = { audio: true, video: false };
 
-        var maskCanvasUnit = 256;
+        var maskCanvasUnit = 236;
         var container, scene, camera, renderer, maskBufferGeo, maskMesh;
         var maskData;
 
@@ -252,13 +253,29 @@
 
         function setMask() {
             var frameNum =
-                Math.floor(((audioContext.currentTime - recordedAudioMark) * animFPS));
+                Math.floor((audioContext.currentTime - recordedAudioMark) * animFPS);
             if (frameNum >= maskData.length) frameNum = maskData.length - 1;
 
             var buff = new Float32Array(maskData[frameNum]);
             maskBufferGeo.setAttribute('position', new THREE.BufferAttribute(buff, 3));
             maskBufferGeo.attributes.position.needsUpdate = true;
             maskBufferGeo.computeBoundingSphere();
+        }
+
+        var spinFrame = 0;
+        var spinFrames = [
+            ' ▝<br>▙ ▗',
+            '▘ <br>▖ ▟',
+            '▘ ▜<br>▖ ',
+            '▛ ▝<br> ▗',
+        ];
+        function setSpin() {
+            if (yakamozProc && audioContext != undefined) {
+                var frame = spinFrames[Math.floor(((audioContext.currentTime) * (animFPS / 5.)) % spinFrames.length)];
+                document.getElementById('vaziyetMonitor').innerHTML = frame;
+            } else {
+                document.getElementById('vaziyetMonitor').innerHTML = '▜▛<br>▟▙';
+            }
         }
 
         function init() {
@@ -341,6 +358,8 @@
             if (yakamozLoop) {
                 setMask();
             }
+
+            setSpin();
 
             render();
         }

@@ -60,6 +60,12 @@ span {
     color: rgb(0, 107, 93);
 }
 
+#vaziyetMonitor {
+    font-family: SourceCodePro-Regular;
+    font-size: 8px;
+    color: rgb(0, 107, 93);
+}
+
 a {
     font-family: josefin;
 }
