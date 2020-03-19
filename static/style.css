@@ -1,3 +1,5 @@
+@font-face { font-family: abastina; src: url('abastina.otf'); }
+
 .hiddenContent {
     display: none;
 }
@@ -64,31 +66,31 @@ a {
 }
 
 .avaz {
-    color: rgb(0, 107, 93);
-    font-family: 'Lato', sans-serif;
+    color: rgb(113, 123, 122);
+    font-family: abastina;
     font-weight: bold;
-    font-size: 17px;
+    font-size: 27px;
 }
 
 .avazKaydet {
     color: rgb(0, 107, 93);
-    font-family: 'Lato', sans-serif;
+    font-family: abastina;
     font-weight: bold;
-    font-size: 17px;
+    font-size: 27px;
 }
 
 .avazDur {
     color: rgb(0, 107, 93);
-    font-family: 'Lato', sans-serif;
+    font-family: abastina;
     font-weight: bold;
-    font-size: 17px;
+    font-size: 27px;
 }
 
 .avazDevamet {
     color: rgb(0, 107, 93);
-    font-family: 'Lato', sans-serif;
+    font-family: abastina;
     font-weight: bold;
-    font-size: 17px;
+    font-size: 27px;
 }
 
 a:link {

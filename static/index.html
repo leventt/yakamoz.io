@@ -50,7 +50,8 @@
             </blockquote>
 
             <blockquote>
-                <div id="yakamozControls"><a class="avazKaydet">kaydet</a><br>[<a class="avazKaydet">record</a>]</div>
+                <div id="yakamozControls" class="avaz"><a class="avazKaydet">kaydet</a><br>[<a
+                        class="avazKaydet">record</a>]</div>
                 <br>
                 <table style="width: 100%; margin-left: 0px; margin-right: 0; padding: 0; border-collapse: collapse;">
                     <tr>
@@ -136,7 +137,7 @@
         var recordedAudio
         var mediaConstraints = { audio: true, video: false };
 
-        var maskCanvasUnit = 300;
+        var maskCanvasUnit = 256;
         var container, scene, camera, renderer, maskBufferGeo, maskMesh;
         var maskData;
 
@@ -327,7 +328,7 @@
                 var framePos = frameNum / (frameCount - 1);
                 var monitorLen = 13;
                 framePos *= monitorLen;
-                for (var i = 0; i < monitorLen + 1; ++i) {
+                for (var i = 0; i < monitorLen; ++i) {
                     var e = (i + 1) / (framePos * 3);
                     monitorAudioPos += e < .33 ? lightShade : (e < .66 ? midShade : darkShade);
                 }
@@ -338,10 +339,6 @@
                 return;
             }
             else if ((yakamozProc || yakamozIdle) && audioContext != undefined) {
-                // document.getElementById('monitorLeft').innerHTML =
-                //     pulseFrames[Math.floor(((audioContext.currentTime) * (animFPS / 3.)) % pulseFrames.length)];
-                // document.getElementById('monitorRight').innerHTML =
-                //     pulseFrames[Math.floor(((audioContext.currentTime) * (animFPS / 3.)) % pulseFrames.length)];
                 document.getElementById('monitorLeft').innerHTML = pulseFrames[0];
                 document.getElementById('monitorRight').innerHTML = pulseFrames[0];
             }
