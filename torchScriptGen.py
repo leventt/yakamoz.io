@@ -1,20 +1,20 @@
 import os
 import torch
-import imp
 from main import ROOT
+from importlib.machinery import SourceFileLoader
 
 
 if __name__ == '__main__':
-    surat = imp.load_source(
+    surat = SourceFileLoader(
         'surat',
         os.path.join(ROOT, 'surat/surat.py')
-    )
+    ).load_module()
     surat.DEVICE = torch.device('cpu')
 
     MODEL_CP_PATH = os.path.join(
         ROOT,
-        'temp',
-        'temp.pth'
+        'checkpoint',
+        'checkpoint.pth'
     )
 
     model = surat.Model(25634)  # TODO

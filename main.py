@@ -6,7 +6,7 @@ import base64
 import io
 import tempfile
 import numpy as np
-from pyzfp import compress as zfpCompress
+from zfpy import compress_numpy as zfpCompress
 import bottle
 from bottle import run
 from bottle import route
@@ -106,11 +106,11 @@ def mask():
     inferred = inference(frameCount, audio, mood)
 
     # DEBUG
-    zfpData = base64.b64encode(zfpCompress(
-        np.array(inferred),
+    zfpData = base64.b64encode(b''.join(zfpCompress(
+        np.array(map(lambda x: round(x, 4), inferred)),
         tolerance=0.0001,
         parallel=True
-    )).decode('utf-8')
+    ).tolist())).decode('utf-8')
     with open(os.path.expanduser('~/temp.base64.zfp.json'), 'w') as fp:
         json.dump(
             zfpData,

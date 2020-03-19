@@ -1,4 +1,6 @@
 temp*
 *.pt
-.mypy*
 __pycache__
+checkpoint
+.my*
+build
