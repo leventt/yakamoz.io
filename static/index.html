@@ -8,16 +8,18 @@
     <meta name="theme-color" content="#888888">
     <meta name="msapplication-navbutton-color" content="#888888">
     <meta name="apple-mobile-web-app-status-bar-style" content="#888888">
+    <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <div id="outer">
-        <div class="hiddeninfo">
+        <div class="hiddenCanvas">
             <canvas id="maskCanvas"></canvas>
         </div>
 
-        <div class="hiddencontent">
+        <div class="hiddenContent">
             <blockquote style="display: none;">
                 <table style="width: 300px;">
                     <tr>
@@ -46,51 +48,60 @@
                     </tr>
                 </table>
             </blockquote>
+
             <blockquote>
-                <table>
+                <div id="yakamozControls"><a class="avazKaydet">kaydet</a><br>[<a class="avazKaydet">record</a>]</div>
+                <br>
+                <table style="width: 100%; margin-left: 0px; margin-right: 0; padding: 0; border-collapse: collapse;">
                     <tr>
-                        <th>
-                            <span id="monitorLeft">
+                        <th style="text-align: end; padding: 0; margin: 0;">
+                            <div id="monitorLeft">
                                 ▒▒▒▒▒▒▒▒▒▒▒▒▒
-                            </span>
+                            </div>
                         </th>
-                        <th>
-                            <span id="vaziyetMonitor">
-                                ▛&nbsp;▜<br>▙&nbsp;▟
-                            </span>
-                        </th>
-                        <th>
-                            <span id="monitorRight">
+                        <th style="text-align: start; padding: 0; margin: 0;">
+                            <div id="monitorRight">
                                 ▒▒▒▒▒▒▒▒▒▒▒▒▒
-                            </span>
+                            </div>
                         </th>
                     </tr>
                 </table>
             </blockquote>
+
             <blockquote>
-                <span>mikrofonu <a class="avaz">aç</a> || <a class="avaz">enable</a> mic&nbsp;&nbsp;</span>
+                <div id="vaziyet"></div>
+                <small>Yukarıdaki hareket ederken, ses kaydı sunucuya gönderiliyor ve işlem görüp bazı veriler geri
+                    dönüyor. Bu kayıt sunucuda saklanmıyor.</small>
                 <br>
-                <span>&nbsp;7 saniye <a class="avazKaydet">kaydet</a> || <a class="avazKaydet">record</a> 7
-                    seconds</span>
-                <br>
-                <span id="avazVaziyet">bekliyor / \ waiting&nbsp;</span>
+                <small>[While that thing above is moving, recorded speech will be uploaded to the server and some data
+                    will come back. Recorded data is not kept on the server.]</small>
             </blockquote>
 
             <blockquote>
-                <!-- credit is due where the logo will be -->
-                <!-- <small style="display: none;"><a target="_blank" href=https://www.behance.net/sinanozer>Sinan Özer</a>
-                    tasarladı logoyu. Ellere
-                    sağlık.</small>
-                <small style="display: none;">[<a target="_blank" href=https://www.behance.net/sinanozer>Sinan Özer</a>
-                    designed
-                    the
-                    logo]</small>
-                <br> -->
-                <small><a target="_blank" href="http://leventtasel.com">Kim</a> yaptı bunu?</small>
-                <small>&nbsp;[<a target="_blank" href="http://leventtasel.com">Who</a> did this?]</small>
+                <small><a class="smalla" target="_blank" href="https://github.com/leventt/yakamoz.io">Kaynak
+                        Kodu</a></small>
+                <small>&nbsp;[<a class="smalla" target="_blank" href="https://github.com/leventt/yakamoz.io">Source
+                        Code</a>]</small>
+            </blockquote>
+
+            <blockquote>
+                <small><a class="smalla" target="_blank" href="http://leventtasel.com">Kim</a> yaptı bunu?</small>
+                <small>&nbsp;[<a class="smalla" target="_blank" href="http://leventtasel.com">Who</a> made
+                    this?]</small>
                 <br>
-                <small>Ne ki <a target="_blank" href="nfo.html">bu</a>?</small>
-                <small>&nbsp;[What is <a target="_blank" href="nfo.html">this</a>?]</small>
+                <small><a class="smalla" target="_blank" href="https://www.behance.net/sinanozer">Kim</a>
+                    tasarıma yardım etti?</small>
+                <small>&nbsp;[<a class="smalla" target="_blank" href="https://www.behance.net/sinanozer">Who</a>
+                    guided design?]</small>
+                <br>
+                <small><a class="smalla" target="_blank" href="https://voice123.com/samsoar">Kimin</a> yüz hareketleri
+                    bunlar?</small>
+                <small>&nbsp;[<a class="smalla" target="_blank" href="https://voice123.com/samsoar">Whose</a> facial
+                    performace is
+                    this?]</small>
+                <br>
+                <small><a class="smalla" target="_blank" href="nfo.html">Nedir</a> ki bu?</small>
+                <small>&nbsp;[<a class="smalla" target="_blank" href="nfo.html">What</a> is this?]</small>
             </blockquote>
         </div>
     </div>
@@ -107,8 +118,10 @@
         var yakamozLoop = false;
         var yakamozProc = false;
         var yakamozIdle = true;
+        var yakamozCountDown = false;
+        var yakamozRecording = false;
 
-        var loopSecs = 7;
+        var loopSecs = 4;
         var animFPS = 29.97;
         var frameNum = 0;
         var frameCount = Math.ceil(loopSecs * animFPS);
@@ -122,7 +135,7 @@
         var recordedAudio
         var mediaConstraints = { audio: true, video: false };
 
-        var maskCanvasUnit = 236;
+        var maskCanvasUnit = 300;
         var container, scene, camera, renderer, maskBufferGeo, maskMesh;
         var maskData;
 
@@ -149,7 +162,7 @@
                     "numberOfMFCCCoefficients": 13,
                     "callback": features => {
                         yakamozIdle = false;
-                        if (yakamozLoop || yakamozProc) {
+                        if (yakamozLoop || yakamozProc || yakamozRecording) {
                             return;
                         }
                         var monitorRight = "";
@@ -167,26 +180,25 @@
                 analyzer.start();
             });
             avazEnabled = true;
-            if (!yakamozLoop) document.getElementById('avazVaziyet').innerHTML =
-                '&nbsp;dinliyor / \\ listening';
         }
-        $('a.avaz').click(function (e) { e.preventDefault(); enableAvaz(); return false; });
 
         function record() {
             if (yakamozLoop) return;
             if (yakamozProc) return;
+            enableAvaz();
             navigator.mediaDevices.getUserMedia({
                 video: false,
                 audio: true
             }).then(async function (stream) {
                 var recorder = new StereoAudioRecorder(stream, {});
                 recorder.record();
-                document.getElementById('avazVaziyet').innerHTML = 'kaydediyor / \\ recording&nbsp;';
+                yakamozRecording = true;
+                recordedAudioMark = audioContext.currentTime;
 
                 window.setTimeout(function () {
                     recorder.stop(function () {
+                        yakamozRecording = false;
                         yakamozProc = true;
-                        document.getElementById('avazVaziyet').innerHTML = '&nbsp;&nbsp;&nbsp;işliyor / \\ processing';
                         var audioBlob = recorder.blob;
                         var audioUrl = URL.createObjectURL(audioBlob);
                         recordedAudio = new Audio(audioUrl);
@@ -243,19 +255,20 @@
                                     yakamozLoop = true;
                                     recordedAudioMark = audioContext.currentTime - recordedAudio.currentTime;
                                     recordedAudio.play();
-                                    document.getElementById('avazVaziyet').innerHTML =
-                                        '<a class="avazDur">duraklat</a> / \\ <a class="avazDur">pause&nbsp;&nbsp;&nbsp;</a>';
+                                    document.getElementById('yakamozControls').innerHTML =
+                                        '<a class="avazDur">duraklat</a><br>[<a class="avazDur">pause</a>]';
                                     $('a.avazDur').click(function (e) { e.preventDefault(); pause(); return false; });
                                 }
                                 function pause() {
                                     yakamozLoop = false;
                                     recordedAudio.pause();
-                                    document.getElementById('avazVaziyet').innerHTML =
-                                        '<a class="avazDevamet">devam et</a> / \\ <a class="avazDevamet">resume&nbsp;&nbsp;</a>';
+                                    document.getElementById('yakamozControls').innerHTML =
+                                        '<a class="avazDevamet">devam et</a> ya da <a class="avazKaydet">kaydet</a><br>[<a class="avazDevamet">resume</a> or <a class="avazKaydet">record</a>]';
                                     $('a.avazDevamet').click(function (e) { e.preventDefault(); resume(); return false; });
+                                    $('a.avazKaydet').click(function (e) { e.preventDefault(); record(); return false; });
                                 }
-                                document.getElementById('avazVaziyet').innerHTML =
-                                    '<a class="avazDur">duraklat</a> / \\ <a class="avazDur">pause&nbsp;&nbsp;&nbsp;</a>';
+                                document.getElementById('yakamozControls').innerHTML =
+                                    '<a class="avazDur">duraklat</a><br>[<a class="avazDur">pause</a>]';
                                 $('a.avazDur').click(function (e) { e.preventDefault(); pause(); return false; });
                             });
                         };
@@ -277,10 +290,6 @@
         }
 
         function setMask() {
-            frameNum =
-                Math.floor((audioContext.currentTime - recordedAudioMark) * animFPS);
-            if (frameNum >= maskData.length) frameNum = maskData.length - 1;
-
             var buff = new Float32Array(maskData[frameNum]);
             maskBufferGeo.setAttribute('position', new THREE.BufferAttribute(buff, 3));
             maskBufferGeo.attributes.position.needsUpdate = true;
@@ -290,15 +299,15 @@
         var spinFrames = [
             '&nbsp;▝&nbsp;<br>▙&nbsp;▗',
             '&nbsp;▘&nbsp;<br>▖&nbsp;▟',
-            '▘&nbsp;▜<br>;&nbsp;▖&nbsp',
+            '▘&nbsp;▜<br>&nbsp;▖&nbsp;',
             '▛&nbsp;▝<br>&nbsp;▗&nbsp;',
         ];
         function setSpin() {
             if (yakamozProc && audioContext != undefined) {
-                document.getElementById('vaziyetMonitor').innerHTML =
+                document.getElementById('vaziyet').innerHTML =
                     spinFrames[Math.floor(((audioContext.currentTime) * (animFPS / 5.)) % spinFrames.length)];
             } else {
-                document.getElementById('vaziyetMonitor').innerHTML = '▛&nbsp;▜<br>▙&nbsp;▟';
+                document.getElementById('vaziyet').innerHTML = '▛&nbsp;▙<br>▜&nbsp;▟';
             }
         }
 
@@ -312,13 +321,8 @@
             '▓▓▓▓▓▓▓▓▓▓▓▓▓',
         ];
         function setPulse() {
-            if (yakamozLoop) {
+            if (yakamozLoop || yakamozRecording) {
                 var monitorAudioPos = "";
-                document.getElementById('monitorRight').innerHTML =
-                    pulseFrames[Math.floor(((audioContext.currentTime) / (animFPS * loopSecs)) % pulseFrames.length)];
-                document.getElementById('monitorLeft').innerHTML =
-                    pulseFrames[Math.floor(((audioContext.currentTime) / (animFPS * loopSecs)) % pulseFrames.length)];
-
                 var framePos = frameNum / (frameCount - 1);
                 var monitorLen = 13;
                 framePos *= monitorLen;
@@ -332,11 +336,13 @@
 
                 return;
             }
-            if ((yakamozProc || yakamozIdle) && audioContext != undefined) {
-                document.getElementById('monitorLeft').innerHTML =
-                    pulseFrames[Math.floor(((audioContext.currentTime) * (animFPS / 3.)) % pulseFrames.length)];
-                document.getElementById('monitorRight').innerHTML =
-                    pulseFrames[Math.floor(((audioContext.currentTime) * (animFPS / 3.)) % pulseFrames.length)];
+            else if ((yakamozProc || yakamozIdle) && audioContext != undefined) {
+                // document.getElementById('monitorLeft').innerHTML =
+                //     pulseFrames[Math.floor(((audioContext.currentTime) * (animFPS / 3.)) % pulseFrames.length)];
+                // document.getElementById('monitorRight').innerHTML =
+                //     pulseFrames[Math.floor(((audioContext.currentTime) * (animFPS / 3.)) % pulseFrames.length)];
+                document.getElementById('monitorLeft').innerHTML = pulseFrames[0];
+                document.getElementById('monitorRight').innerHTML = pulseFrames[0];
             }
         }
 
@@ -417,6 +423,12 @@
                 requestAnimationFrame(animate);
             }, 1000 / (animFPS * 3));
 
+            if (audioContext != undefined && (yakamozLoop || yakamozRecording)) {
+                frameNum =
+                    Math.floor((audioContext.currentTime - recordedAudioMark) * animFPS);
+                if (frameNum >= frameCount) frameNum = frameNum % frameCount;
+            }
+
             if (yakamozLoop) {
                 setMask();
             }
@@ -466,9 +478,8 @@
             $("#emotion-14").val();
             $("#emotion-15").val();
 
-            $(".hiddenlogo").fadeIn(500).removeClass("hiddenlogo");
-            $(".hiddencontent").fadeIn(4000).removeClass("hiddencontent");
-            $(".hiddeninfo").fadeIn(5000).removeClass("hiddeninfo");
+            $(".hiddenContent").fadeIn(500).removeClass("hiddenContent");
+            $(".hiddenCanvas").fadeIn(5000).removeClass("hiddenCanvas");
             init();
             animate();
         });

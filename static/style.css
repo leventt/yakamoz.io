@@ -1,71 +1,53 @@
-@font-face {
-    font-family: abastina;
-    src: url('abastina.otf');
-}
-
-@font-face {
-    font-family: SourceCodePro-SemiBold;
-    src: url('SourceCodePro-SemiBold.ttf');
-}
-
-@font-face {
-    font-family: SourceCodePro-Bold;
-    src: url('SourceCodePro-Bold.ttf');
-}
-
-.titleAbastina {
-    font-family: abastina;
-    color: rgb(0, 107, 93);
-    font-size: 21px;
-    text-align: center;
-}
-
-.hiddenlogo {
+.hiddenContent {
     display: none;
 }
 
-.hiddencontent {
-    display: none;
-}
-
-.hiddeninfo {
+.hiddenCanvas {
     display: none;
 }
 
 th {
-    font-family: SourceCodePro-SemiBold;
-    font-size: 8px;
+    font-family: 'Lato', sans-serif;
+    font-weight: normal;
+    font-size: 10px;
     text-align: left;
 }
 
 small {
-    font-family: SourceCodePro-SemiBold;
-    font-size: 11px;
-    text-align: left;
+    font-family: 'Lato', sans-serif;
+    font-weight: normal;
+    font-size: 10px;
+}
+
+.smalla {
+    font-family: 'Lato', sans-serif;
+    font-weight: bold;
+    font-size: 10px;
 }
 
 span {
-    font-family: SourceCodePro-SemiBold;
-    font-size: 11px;
+    font-family: 'Lato', sans-serif;
+    font-weight: normal;
+    font-size: 17px;
     color: rgb(59, 67, 66);
 }
 
 #monitorRight {
-    font-family: SourceCodePro-SemiBold;
-    font-size: 11px;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 5px;
     color: rgb(0, 107, 93);
 }
 
 #monitorLeft {
-    font-family: SourceCodePro-SemiBold;
-    font-size: 11px;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 5px;
     color: rgb(0, 107, 93);
 }
 
-#vaziyetMonitor {
-    font-family: SourceCodePro-SemiBold;
-    font-size: 7px;
-    color: rgb(117, 148, 143);
+#vaziyet {
+    font-family: 'Lato', sans-serif;
+    font-size: 9px;
+    color: rgb(32, 54, 51);
 }
 
 table {
@@ -76,32 +58,37 @@ table {
 
 a {
     color: rgb(0, 107, 93);
-    font-family: SourceCodePro-Bold;
-    font-size: 11px;
+    font-family: 'Lato', sans-serif;
+    font-weight: bold;
+    font-size: 17px;
 }
 
 .avaz {
     color: rgb(0, 107, 93);
-    font-family: SourceCodePro-Bold;
-    font-size: 11px;
+    font-family: 'Lato', sans-serif;
+    font-weight: bold;
+    font-size: 17px;
 }
 
 .avazKaydet {
     color: rgb(0, 107, 93);
-    font-family: SourceCodePro-Bold;
-    font-size: 11px;
+    font-family: 'Lato', sans-serif;
+    font-weight: bold;
+    font-size: 17px;
 }
 
 .avazDur {
     color: rgb(0, 107, 93);
-    font-family: SourceCodePro-Bold;
-    font-size: 11px;
+    font-family: 'Lato', sans-serif;
+    font-weight: bold;
+    font-size: 17px;
 }
 
 .avazDevamet {
     color: rgb(0, 107, 93);
-    font-family: SourceCodePro-Bold;
-    font-size: 11px;
+    font-family: 'Lato', sans-serif;
+    font-weight: bold;
+    font-size: 17px;
 }
 
 a:link {
@@ -128,6 +115,13 @@ a:active {
 body {
     color: #222;
     background-color: #ccc;
+    font-family: 'Lato', sans-serif;
+    font-size: 17px;
+}
+
+div {
+    font-family: 'Lato', sans-serif;
+    font-size: 17px;
 }
 
 #outer {
