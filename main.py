@@ -5,6 +5,8 @@ import torchaudio
 import base64
 import io
 import tempfile
+import numpy as np
+from pyzfp import compress as zfpCompress
 import bottle
 from bottle import run
 from bottle import route
@@ -101,7 +103,23 @@ def mask():
     mood = json.loads(request.forms.get('mood'))
     audio = request.forms.get('audio')
     frameCount = int(float(request.forms.get('frameCount')))
-    return json.dumps(inference(frameCount, audio, mood))
+    inferred = inference(frameCount, audio, mood)
+
+    # DEBUG
+    zfpData = base64.b64encode(zfpCompress(
+        np.array(inferred),
+        tolerance=0.0001,
+        parallel=True
+    )).decode('utf-8')
+    with open(os.path.expanduser('~/temp.base64.zfp.json'), 'w') as fp:
+        json.dump(
+            zfpData,
+            fp
+        )
+    result = zfpData
+    result = json.dumps(inferred)
+
+    return result
 
 
 @route('/maskIndices')
