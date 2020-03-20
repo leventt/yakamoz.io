@@ -6,7 +6,6 @@ import base64
 import io
 import tempfile
 import numpy as np
-from zfpy import compress_numpy as zfpCompress
 import bottle
 from bottle import run
 from bottle import route
@@ -93,7 +92,7 @@ def inference(frameCount, audio, mood):
             torch.index_select(frames, 1, torch.LongTensor([1]))*-1
         ),
         dim=1
-    ).view(-1, 8320 * 3).tolist()
+    ).detach().numpy().flatten('C').tolist()
 
     return frames
 
@@ -103,16 +102,12 @@ def mask():
     mood = json.loads(request.forms.get('mood'))
     audio = request.forms.get('audio')
     frameCount = int(float(request.forms.get('frameCount')))
-    inferred = inference(frameCount, audio, mood)
+    inferred = list(map(
+        lambda x: round(x, 3),
+        inference(frameCount, audio, mood)
+    ))
 
-    zfpData = zfpCompress(
-        np.array(inferred, dtype=np.float32).flatten('C'),
-        tolerance=0.001,
-    )
-
-    encodedData = base64.b64encode(zfpData).decode('utf-8')
-
-    return encodedData
+    return json.dumps(inferred)
 
 
 @route('/maskIndices')

@@ -110,28 +110,6 @@
     <script src="jquery-ui.min.js"></script>
     <script src="meyda.js"></script>
     <script src="RecordRTC.min.js"></script>
-    <script src="zfpHelper.js"></script>
-    <script>
-        var zfpHelper;
-        Module.onRuntimeInitialized = _ => {
-            _zfpHelper = Module.cwrap('zfpHelper', 'number', ['number']);
-            zfpDecompress = function (data) {
-                // dataStr = atob(btoa(data));
-                dataStr = atob(data);
-
-                var bufferPtr = Module._malloc(dataStr.length + 1);
-                Module.stringToUTF8(dataStr, bufferPtr, 120 * 8320 * 3 * 4);
-
-                var floatPtr = new _zfpHelper(bufferPtr);
-
-                Module._free(bufferPtr);
-
-                var floats = new Float32Array(Module.HEAPF32.buffer, floatPtr, 120 * 8320 * 3);
-
-                return floats;
-            };
-        };
-    </script>
     <script type="module">
         import * as THREE from './three.module.js';
         import { OrbitControls } from './OrbitControls.js';
@@ -261,7 +239,7 @@
                                 contentType: false,
                                 enctype: 'multipart/form-data'
                             }).then(function (data) {
-                                maskData = zfpDecompress(data);
+                                maskData = new Float32Array(JSON.parse(data));
 
                                 yakamozLoop = true;
                                 yakamozProc = false;
@@ -315,7 +293,6 @@
         function setMask() {
             var roll = frameNum * 8320 * 3;
             var buff = maskData.slice(roll, roll + (8320 * 3));
-            return;
             maskBufferGeo.setAttribute('position', new THREE.BufferAttribute(buff, 3));
             maskBufferGeo.attributes.position.needsUpdate = true;
             maskBufferGeo.computeBoundingSphere();
