@@ -13,7 +13,10 @@ emcmake cmake ..
 cmake --build . --parallel 4
 
 echo "copying stuff to ../static"
-cp zfp/bin/zfp.wasm ../static/zfp/.
-cp zfp/bin/zfp.js ../static/zfp/.
 cp zfpHelper.wasm ../static/.
 cp zfpHelper.js ../static/.
+
+cd ..
+
+rm -rf __pycache__
+python main.py

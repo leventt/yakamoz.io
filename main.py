@@ -6,6 +6,7 @@ import base64
 import io
 import tempfile
 import numpy as np
+import zfpy
 import bottle
 from bottle import run
 from bottle import route
@@ -102,12 +103,34 @@ def mask():
     mood = json.loads(request.forms.get('mood'))
     audio = request.forms.get('audio')
     frameCount = int(float(request.forms.get('frameCount')))
-    inferred = list(map(
-        lambda x: round(x, 3),
-        inference(frameCount, audio, mood)
-    ))
+    inferred = inference(frameCount, audio, mood)
 
-    return json.dumps(inferred)
+    return json.dumps(
+        json.loads(
+            json.dumps(inferred),
+            parse_float=lambda x: round(float(x), 4)
+        )
+    )
+    # TODO
+    if frameCount != 120:
+        raise
+
+    compressed = zfpy.compress_numpy(
+        np.ascontiguousarray(inferred, dtype=np.float32).reshape(120, 8320, 3),
+        tolerance=0.001,
+        write_header=False
+    )
+    compressed = base64.b64encode(compressed)
+    # compressed = compressed[compressed.find('/')+1:]  # gets rid of the header
+    compressed = compressed.replace(
+        b'/', b'_'
+    )  # did the same on cxx side
+    inferredBytes = compressed.decode('utf-8')  # prep string
+
+    with open(os.path.expanduser('~/deneme.txt'), 'w') as fp:
+        fp.write(inferredBytes)
+
+    return json.dumps(inferredBytes)
 
 
 @route('/maskIndices')

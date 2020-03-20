@@ -106,6 +106,28 @@
             </blockquote>
         </div>
     </div>
+    <script src="zfpHelper.js"></script>
+    <script>
+        var zfpHelper;
+        Module.onRuntimeInitialized = _ => {
+            _zfpHelper = Module.cwrap('zfpHelper', 'number', ['string']);
+            zfpDecompress = function (data) {
+                console.log(data);
+                var bufferPtr = Module._malloc(data.length + 1);
+                Module.stringToUTF8(data, bufferPtr, 120 * 8320 * 3 * 4);
+
+                var floatPtr = _zfpHelper(bufferPtr);
+
+                Module._free(bufferPtr);
+
+                var floats = new Float32Array(Module.HEAPF32.buffer, floatPtr, 120 * 8320 * 3);
+
+                console.log(floats);
+
+                return floats;
+            };
+        };
+    </script>
     <script src="jquery-3.4.1.min.js"></script>
     <script src="jquery-ui.min.js"></script>
     <script src="meyda.js"></script>
@@ -240,6 +262,8 @@
                                 enctype: 'multipart/form-data'
                             }).then(function (data) {
                                 maskData = new Float32Array(JSON.parse(data));
+                                // TODO
+                                // maskData = zfpDecompress(JSON.parse(data));
 
                                 yakamozLoop = true;
                                 yakamozProc = false;
