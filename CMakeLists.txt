@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 project(yakamozZFP)
 
 set(CMAKE_TOOLCHAIN_FILE $EMSCRIPTEN/cmake/Modules/Platform/Emscripten.cmake)
-set(CMAKE_BUILD_TYPE MinSizeRel)
+set(CMAKE_BUILD_TYPE Release)
 
 set(BIT_STREAM_WORD_TYPE uint64)
 
@@ -14,5 +14,5 @@ target_link_libraries(zfpHelper zfp)
 
 set_target_properties(
     zfpHelper PROPERTIES LINK_FLAGS
-    "-s INITIAL_MEMORY=33554432 -s EXTRA_EXPORTED_RUNTIME_METHODS=['cwrap']"
+    "-s INITIAL_MEMORY=67108864 -s EXTRA_EXPORTED_RUNTIME_METHODS=\"['cwrap', 'lengthBytesUTF8', 'stringToUTF8']\""
 )

@@ -114,25 +114,22 @@
     <script>
         var zfpHelper;
         Module.onRuntimeInitialized = _ => {
-            _zfpHelper = Module.cwrap('zfpHelper', 'string', ['string']);
-            zfpHelper = function (dataStr) {
-                var b64Data = atob(_zfpHelper(
-                    atob(dataStr)
-                ));
+            _zfpHelper = Module.cwrap('zfpHelper', 'number', ['number']);
+            zfpDecompress = function (data) {
+                // dataStr = atob(btoa(data));
+                dataStr = atob(data);
 
-                console.log(btoa(b64Data));
+                var bufferPtr = Module._malloc(dataStr.length + 1);
+                Module.stringToUTF8(dataStr, bufferPtr, 120 * 8320 * 3 * 4);
 
-                var len = b64Data.length;
-                var bytes = new Uint8Array(len);
-                for (var i = 0; i < len; i++) {
-                    bytes[i] = b64Data.charCodeAt(i);
-                }
-                return Float32Array.from(bytes.buffer);
+                var floatPtr = new _zfpHelper(bufferPtr);
+
+                Module._free(bufferPtr);
+
+                var floats = new Float32Array(Module.HEAPF32.buffer, floatPtr, 120 * 8320 * 3);
+
+                return floats;
             };
-
-            // DEBUG
-            console.log(zfpHelper('MDAwMDAwMDA='));
-            console.log(zfpHelper('emZwBSEAAAAAAJDKAAAAAAAAAIALAAAA'));
         };
     </script>
     <script type="module">
@@ -264,7 +261,8 @@
                                 contentType: false,
                                 enctype: 'multipart/form-data'
                             }).then(function (data) {
-                                maskData = JSON.parse(data);
+                                maskData = zfpDecompress(data);
+                                console.log(maskData);
 
                                 yakamozLoop = true;
                                 yakamozProc = false;
@@ -316,7 +314,7 @@
         }
 
         function setMask() {
-            var buff = new Float32Array(maskData[frameNum]);
+            var buff = maskData.slice(frameNum * 8320 * 3, frameNum * 8320 * 3 + 8320 * 3);
             maskBufferGeo.setAttribute('position', new THREE.BufferAttribute(buff, 3));
             maskBufferGeo.attributes.position.needsUpdate = true;
             maskBufferGeo.computeBoundingSphere();

@@ -1,50 +1,47 @@
 #include "zfp.h"
 #include <emscripten.h>
-#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#define CBASE64_IMPLEMENTATION
-#include "base64.h"
 
-static cbase64_encodestate encodeState;
-static cbase64_decodestate decodeState;
-
-static char encodeBuff[8388608];
-static unsigned char decodeBuff[8388608];
-
-// https://github.com/SizzlingCalamari/cbase64/blob/master/tests/encodedecode.c
-EncodeData(const unsigned char* data_in, unsigned int length_in, unsigned int* length_out)
-{
-    char* encodeBuffEnd = encodeBuff;
-
-    cbase64_encodestate encodeState;
-    cbase64_init_encodestate(&encodeState);
-    encodeBuffEnd += cbase64_encode_block(data_in, length_in, encodeBuffEnd, &encodeState);
-    encodeBuffEnd += cbase64_encode_blockend(encodeBuffEnd, &encodeState);
-
-    *length_out = (encodeBuffEnd - encodeBuff);
-}
-
-DecodeData(const char* code_in, unsigned int length_in, unsigned int* length_out)
-{
-    const unsigned int decodedLength = cbase64_calc_decoded_length(code_in, length_in);
-
-    cbase64_decodestate decodeState;
-    cbase64_init_decodestate(&decodeState);
-    *length_out = cbase64_decode_block(code_in, length_in, decodeBuff, &decodeState);
-}
+static float array[120 * 8320 * 3];
 
 EMSCRIPTEN_KEEPALIVE
-char* zfpHelper(const char* data)
+float* zfpHelper(unsigned char* compressedBuffer)
 {
-    const unsigned int dataLength = 1 + strlen(data);
+    // ZPF STUFF FROM simple.c EXAMPLE
 
-    unsigned int encodedLength;
-    unsigned int decodedLength;
+    zfp_type type;     /* array scalar type */
+    zfp_field* field;  /* array meta data */
+    zfp_stream* zfp;   /* compressed stream */
+    float* buffer;     /* storage for compressed stream */
+    size_t bufsize;    /* byte size of compressed buffer */
+    bitstream* stream; /* bit stream to write to or read from */
 
-    DecodeData(encodeBuff, encodedLength, &decodedLength);
-    // TODO
-    EncodeData((const unsigned char*)decodeBuff, decodedLength, &encodedLength);
+    zfp = zfp_stream_open(NULL);
+    type = zfp_type_float;
+    // math.ceil(4 * 29.97), 8320, 3 (framecount, vert count, dimension count)
+    field = zfp_field_1d(compressedBuffer, type, 120 * 8320 * 3);
+    // tolerance 0.001 matching server side python script called main.py
+    zfp_stream_set_accuracy(zfp, 0.001);
+    
+    bufsize = zfp_stream_maximum_size(zfp, field);
+    buffer = malloc(bufsize);
 
-    return encodeBuff;
+    stream = stream_open(buffer, bufsize);
+    zfp_stream_set_bit_stream(zfp, stream);
+    zfp_stream_rewind(zfp);
+
+    zfp_decompress(zfp, field);
+
+    // CLEANUP
+
+    zfp_field_free(field);
+    zfp_stream_close(zfp);
+    stream_close(stream);
+
+    memcpy(array, buffer, 120 * 8320 * 3 * 4);
+
+    free(buffer);
+
+    return buffer;
 }

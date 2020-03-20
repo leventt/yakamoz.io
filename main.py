@@ -105,19 +105,14 @@ def mask():
     frameCount = int(float(request.forms.get('frameCount')))
     inferred = inference(frameCount, audio, mood)
 
-    # DEBUG
-    zfpData = base64.b64encode(zfpCompress(
-        np.array(inferred),
+    zfpData = zfpCompress(
+        np.array(inferred, dtype=np.float32).flatten('C'),
         tolerance=0.001,
-    ))
-    with open(os.path.expanduser('~/temp.zfp.base64.bin'), 'wb') as fp:
-        fp.write(zfpData)
+    )
 
-    result = zfpData
-    #
-    result = json.dumps(inferred)
+    encodedData = base64.b64encode(zfpData).decode('utf-8')
 
-    return result
+    return encodedData
 
 
 @route('/maskIndices')
