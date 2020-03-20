@@ -108,14 +108,13 @@ def mask():
     # DEBUG
     zfpData = base64.b64encode(zfpCompress(
         np.array(inferred),
-        tolerance=0.0001,
-    )).decode('utf-8')
-    with open(os.path.expanduser('~/temp.base64.zfp.json'), 'w') as fp:
-        json.dump(
-            zfpData,
-            fp
-        )
+        tolerance=0.001,
+    ))
+    with open(os.path.expanduser('~/temp.zfp.base64.bin'), 'wb') as fp:
+        fp.write(zfpData)
+
     result = zfpData
+    #
     result = json.dumps(inferred)
 
     return result

@@ -110,8 +110,31 @@
     <script src="jquery-ui.min.js"></script>
     <script src="meyda.js"></script>
     <script src="RecordRTC.min.js"></script>
-    <script src="zfp.js"></script>
+    <script src="zfpHelper.js"></script>
+    <script>
+        var zfpHelper;
+        Module.onRuntimeInitialized = _ => {
+            _zfpHelper = Module.cwrap('zfpHelper', 'string', ['string']);
+            zfpHelper = function (dataStr) {
+                var b64Data = atob(_zfpHelper(
+                    atob(dataStr)
+                ));
 
+                console.log(btoa(b64Data));
+
+                var len = b64Data.length;
+                var bytes = new Uint8Array(len);
+                for (var i = 0; i < len; i++) {
+                    bytes[i] = b64Data.charCodeAt(i);
+                }
+                return Float32Array.from(bytes.buffer);
+            };
+
+            // DEBUG
+            console.log(zfpHelper('MDAwMDAwMDA='));
+            console.log(zfpHelper('emZwBSEAAAAAAJDKAAAAAAAAAIALAAAA'));
+        };
+    </script>
     <script type="module">
         import * as THREE from './three.module.js';
         import { OrbitControls } from './OrbitControls.js';
@@ -185,6 +208,7 @@
         }
 
         function record() {
+            if (yakamozRecording) return;
             if (yakamozLoop) return;
             if (yakamozProc) return;
             enableAvaz();

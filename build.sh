@@ -1,16 +1,19 @@
-conda env create -f environment.yml
-conda activate yakamoz
-python torchScriptGen.py
+# conda env create -f environment.yml
+# conda activate yakamoz
+# python torchScriptGen.py
 
-cd zfp
-git checkout tags/0.5.5
-git pull
+# cd zfp
+# git checkout tags/0.5.5
+# git pull
 
-cd ..
+# cd ..
 mkdir build
 cd build
 emcmake cmake ..
-cmake --build . --config Release
+cmake --build . --parallel 4
 
-cp zfp/bin/zfp.wasm ../static/.
-cp zfp/bin/zfp.js ../static/.
+echo "copying stuff to ../static"
+cp zfp/bin/zfp.wasm ../static/zfp/.
+cp zfp/bin/zfp.js ../static/zfp/.
+cp zfpHelper.wasm ../static/.
+cp zfpHelper.js ../static/.
