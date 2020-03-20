@@ -1,4 +1,5 @@
 import os
+import random
 import json
 import torch
 import torchaudio
@@ -80,10 +81,17 @@ def inference(frameCount, audio, mood):
             )
         )
 
+    randomMoodRoll = random.randint(
+        0, tracedScript.mood.size()[0] - frameCount
+    )
     frames = tracedScript(
         allMFCC.view(-1, 1, 64, 32),
-        torch.Tensor(mood).float().repeat(frameCount)
-        # tracedScript.mood[100:100 + frameCount]  # DEBUG
+        torch.Tensor(mood).float().repeat(frameCount) *
+        torch.roll(
+            tracedScript.mood,
+            (randomMoodRoll * -1),
+            dims=0,
+        )[:120, :].view(frameCount * 16)
     ).view(-1, 3) * 2.
     # blender has a different coordinate system than three.js
     frames = torch.cat(

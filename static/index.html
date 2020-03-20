@@ -161,7 +161,7 @@
         var container, scene, camera, renderer, maskBufferGeo, maskMesh;
         var maskData;
 
-        var moodScale = 0.025;  // TODO
+        var moodScale = 0.005;  // TODO
 
         var recordedAudioMark = 0;
 
@@ -310,7 +310,6 @@
                 var buff = new Float32Array(JSON.parse(data)[0]);
                 maskBufferGeo.setAttribute('position', new THREE.BufferAttribute(buff, 3));
                 maskBufferGeo.attributes.position.needsUpdate = true;
-                maskBufferGeo.computeBoundingSphere();
             });
         }
 
@@ -319,7 +318,6 @@
             var buff = maskData.slice(roll, roll + (8320 * 3));
             maskBufferGeo.setAttribute('position', new THREE.BufferAttribute(buff, 3));
             maskBufferGeo.attributes.position.needsUpdate = true;
-            maskBufferGeo.computeBoundingSphere();
         }
 
         var spinFrames = [
