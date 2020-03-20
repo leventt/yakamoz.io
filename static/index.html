@@ -262,7 +262,6 @@
                                 enctype: 'multipart/form-data'
                             }).then(function (data) {
                                 maskData = zfpDecompress(data);
-                                console.log(maskData);
 
                                 yakamozLoop = true;
                                 yakamozProc = false;
@@ -314,7 +313,9 @@
         }
 
         function setMask() {
-            var buff = maskData.slice(frameNum * 8320 * 3, frameNum * 8320 * 3 + 8320 * 3);
+            var roll = frameNum * 8320 * 3;
+            var buff = maskData.slice(roll, roll + (8320 * 3));
+            return;
             maskBufferGeo.setAttribute('position', new THREE.BufferAttribute(buff, 3));
             maskBufferGeo.attributes.position.needsUpdate = true;
             maskBufferGeo.computeBoundingSphere();
