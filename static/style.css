@@ -67,28 +67,28 @@ a {
     color: rgb(113, 123, 122);
     font-family: 'Source Code Pro', monospace;
     font-weight: bold;
-    font-size: 27px;
+    font-size: 21px;
 }
 
 .avazKaydet {
     color: rgb(0, 107, 93);
     font-family: 'Source Code Pro', monospace;
     font-weight: bold;
-    font-size: 27px;
+    font-size: 21px;
 }
 
 .avazDur {
     color: rgb(0, 107, 93);
     font-family: 'Source Code Pro', monospace;
     font-weight: bold;
-    font-size: 27px;
+    font-size: 21px;
 }
 
 .avazDevamet {
     color: rgb(0, 107, 93);
     font-family: 'Source Code Pro', monospace;
     font-weight: bold;
-    font-size: 27px;
+    font-size: 21px;
 }
 
 a:link {
