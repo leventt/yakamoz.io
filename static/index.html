@@ -417,6 +417,20 @@
             '▛&nbsp;▜<br>▙&nbsp;▟',
             '▛&nbsp;▙<br>▜&nbsp;▟',
         ];
+        var timeLeftFrames = [
+            'dört',
+            'üç',
+            'iki',
+            'bir',
+            'kaydediyor'
+        ];
+        var timeLeftFramesEng = [
+            'four',
+            'three',
+            'two',
+            'one',
+            'recording'
+        ];
         function record() {
             if (yakamozRecording) return;
             if (yakamozLoop) return;
@@ -443,6 +457,9 @@
                             recorder.stop(function () {
                                 yakamozRecording = false;
                                 yakamozProc = true;
+
+                                document.getElementById('yakamozControls').innerHTML = "bekliyor<br>[waiting]";
+
                                 var audioBlob = recorder.blob;
                                 var audioUrl = URL.createObjectURL(audioBlob);
                                 recordedAudio = new Audio(audioUrl);
@@ -521,9 +538,16 @@
                             });
                         }, 1000 * loopSecs);
                     }
+
                     countDownFrame = 4 - timeleft;
+
                     document.getElementById("vaziyet").innerHTML = countDownFrames[countDownFrame];
+
+                    document.getElementById('yakamozControls').innerHTML =
+                        timeLeftFrames[countDownFrame] + "<br>[" + timeLeftFramesEng[countDownFrame] + "]";
+
                     timeleft -= 1;
+
                 }, 1000);
             });
         }
