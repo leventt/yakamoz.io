@@ -8,13 +8,216 @@
     <meta name="theme-color" content="#888888">
     <meta name="msapplication-navbutton-color" content="#888888">
     <meta name="apple-mobile-web-app-status-bar-style" content="#888888">
-    <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=Sen&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Titillium+Web&display=swap" rel="stylesheet">
+    <style>
+        .hiddenContent {
+            display: none;
+        }
+
+        .hiddenCanvas {
+            display: none;
+        }
+
+        th {
+            font-family: 'Lato', sans-serif;
+            font-weight: normal;
+            font-size: 10px;
+            text-align: left;
+        }
+
+        small {
+            font-family: 'Lato', sans-serif;
+            font-weight: normal;
+            font-size: 10px;
+        }
+
+        .smalla {
+            font-family: 'Lato', sans-serif;
+            font-weight: bold;
+            font-size: 10px;
+        }
+
+        span {
+            font-family: 'Lato', sans-serif;
+            font-weight: normal;
+            font-size: 17px;
+            color: rgb(59, 67, 66);
+        }
+
+        div {
+            font-family: 'Lato', sans-serif;
+            font-size: 13px;
+            color: rgb(83, 101, 99);
+        }
+
+        #monitorRight {
+            font-family: 'Sen', sans-serif;
+            font-size: 5px;
+            color: rgb(0, 107, 93);
+        }
+
+        #monitorLeft {
+            font-family: 'Sen', sans-serif;
+            font-size: 5px;
+            color: rgb(0, 107, 93);
+        }
+
+        #vaziyet {
+            font-family: 'Lato', sans-serif;
+            font-size: 9px;
+            color: rgb(32, 54, 51);
+        }
+
+        table {
+            width: auto;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        a {
+            color: rgb(0, 107, 93);
+            font-family: 'Lato', sans-serif;
+            font-weight: bold;
+            font-size: 17px;
+        }
+
+        .avaz {
+            color: rgb(113, 123, 122);
+            font-family: 'Sen', sans-serif;
+            font-weight: bold;
+            font-size: 21px;
+        }
+
+        .avazKaydet {
+            color: rgb(0, 107, 93);
+            font-family: 'Sen', sans-serif;
+            font-weight: bold;
+            font-size: 21px;
+        }
+
+        .avazDur {
+            color: rgb(0, 107, 93);
+            font-family: 'Sen', sans-serif;
+            font-weight: bold;
+            font-size: 21px;
+        }
+
+        .avazDevamet {
+            color: rgb(0, 107, 93);
+            font-family: 'Sen', sans-serif;
+            font-weight: bold;
+            font-size: 21px;
+        }
+
+        a:link {
+            text-decoration: none;
+            color: rgb(0, 107, 93);
+        }
+
+        a:visited {
+            text-decoration: none;
+            color: rgb(0, 107, 93);
+        }
+
+        a:hover {
+            text-decoration: none;
+            color: rgb(41, 170, 2);
+            cursor: pointer;
+        }
+
+        a:active {
+            text-decoration: none;
+            color: rgb(0, 107, 93);
+        }
+
+        body {
+            color: #222;
+            background-color: #ccc;
+            font-family: 'Lato', sans-serif;
+            font-size: 17px;
+        }
+
+        #outer {
+            width: 100%;
+            text-align: center;
+        }
+
+        #maskCanvas {
+            outline: none;
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            width: 64px;
+            height: 0px;
+            border-radius: 0px;
+            background: #777777;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: rgb(0, 107, 93);
+            cursor: pointer;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: rgb(0, 107, 93);
+            cursor: pointer;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: rgb(41, 170, 2);
+            cursor: pointer;
+        }
+
+        .slider::-moz-range-thumb:hover {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: rgb(41, 170, 2);
+            cursor: pointer;
+        }
+
+        blockquote {
+            display: table;
+            padding-top: 8px;
+            padding-bottom: 8px;
+            margin-top: 16px;
+            margin-bottom: 16px;
+            margin-left: auto;
+            margin-right: auto;
+            /* background-color: #ddd; */
+            width: 313px;
+        }
+
+        audio {
+            display: none;
+        }
+    </style>
 </head>
 
 <body>
     <div id="outer">
+        <blockquote>
+            <img src="logo.png" style="width:64px;height:64px;" alt="yakamoz.io logo by Sinan Özer">
+        </blockquote>
         <div class="hiddenCanvas">
             <canvas id="maskCanvas"></canvas>
         </div>
@@ -71,11 +274,15 @@
 
             <blockquote>
                 <div id="vaziyet"></div>
-                <small>Yukarıdaki hareket ederken, ses kaydı sunucuya gönderiliyor ve işlem görüp bazı veriler geri
-                    dönüyor. Bu kayıt sunucuda saklanmıyor.</small>
-                <br>
-                <small>[While that thing above is moving, recorded speech will be uploaded to the server and some data
-                    will come back. Recorded data is not kept on the server.]</small>
+                <div>
+                    <br>
+                    Yukarıdaki hareket ederken, ses kaydı sunucuya gönderiliyor ve işlem görüp bazı veriler geri
+                    dönüyor. Bu kayıt sunucuda saklanmıyor.
+                    <br>
+                    [While that thing above is moving, recorded speech will be uploaded to the server and some
+                    data
+                    will come back. Recorded data is not kept on the server.]
+                </div>
             </blockquote>
 
             <blockquote>
@@ -91,9 +298,9 @@
                     this?]</small>
                 <br>
                 <small><a class="smalla" target="_blank" href="https://www.behance.net/sinanozer">Kim</a>
-                    tasarıma yardım etti?</small>
+                    yaptı logoyu?</small>
                 <small>&nbsp;[<a class="smalla" target="_blank" href="https://www.behance.net/sinanozer">Who</a>
-                    guided design?]</small>
+                    designed the logo?]</small>
                 <br>
                 <small><a class="smalla" target="_blank" href="https://voice123.com/samsoar">Kimin</a> yüz hareketleri
                     bunlar?</small>
@@ -204,6 +411,12 @@
             avazEnabled = true;
         }
 
+        var countDownFrames = [
+            '▛&nbsp;▜<br>▙&nbsp;▟',
+            '▟&nbsp;▜<br>▙&nbsp;▛',
+            '▛&nbsp;▜<br>▙&nbsp;▟',
+            '▛&nbsp;▙<br>▜&nbsp;▟',
+        ];
         function record() {
             if (yakamozRecording) return;
             if (yakamozLoop) return;
@@ -213,92 +426,105 @@
                 video: false,
                 audio: true
             }).then(async function (stream) {
-                var recorder = new StereoAudioRecorder(stream, {});
-                recorder.record();
-                yakamozRecording = true;
-                recordedAudioMark = audioContext.currentTime;
+                var countDownFrame = 0;
+                var timeleft = 4;
+                var vaziyetCountDown = setInterval(function () {
+                    yakamozCountDown = true;
+                    if (timeleft <= 0) {
+                        clearInterval(vaziyetCountDown);
+                        yakamozCountDown = false;
 
-                window.setTimeout(function () {
-                    recorder.stop(function () {
-                        yakamozRecording = false;
-                        yakamozProc = true;
-                        var audioBlob = recorder.blob;
-                        var audioUrl = URL.createObjectURL(audioBlob);
-                        recordedAudio = new Audio(audioUrl);
+                        var recorder = new StereoAudioRecorder(stream, {});
+                        recorder.record();
+                        yakamozRecording = true;
+                        recordedAudioMark = audioContext.currentTime;
 
-                        var reader = new window.FileReader();
-                        reader.readAsDataURL(audioBlob);
-                        reader.onloadend = function () {
-                            var formData = new FormData();
-                            formData.append('frameCount', frameCount);
-                            formData.append('audio', reader.result);
-                            formData.append('mood', JSON.stringify(
-                                [
-                                    $("#emotion-00").val() * moodScale,
-                                    $("#emotion-01").val() * moodScale,
-                                    $("#emotion-02").val() * moodScale,
-                                    $("#emotion-03").val() * moodScale,
-                                    $("#emotion-04").val() * moodScale,
-                                    $("#emotion-05").val() * moodScale,
-                                    $("#emotion-06").val() * moodScale,
-                                    $("#emotion-07").val() * moodScale,
-                                    $("#emotion-08").val() * moodScale,
-                                    $("#emotion-09").val() * moodScale,
-                                    $("#emotion-10").val() * moodScale,
-                                    $("#emotion-11").val() * moodScale,
-                                    $("#emotion-12").val() * moodScale,
-                                    $("#emotion-13").val() * moodScale,
-                                    $("#emotion-14").val() * moodScale,
-                                    $("#emotion-15").val() * moodScale,
-                                ]
-                            ));
-                            $.ajax({
-                                type: "POST",
-                                url: "mask",
-                                data: formData,
-                                cache: false,
-                                processData: false,
-                                contentType: false,
-                                enctype: 'multipart/form-data'
-                            }).then(function (data) {
-                                maskData = new Float32Array(JSON.parse(data));
-                                // TODO
-                                // maskData = zfpDecompress(JSON.parse(data));
+                        window.setTimeout(function () {
+                            recorder.stop(function () {
+                                yakamozRecording = false;
+                                yakamozProc = true;
+                                var audioBlob = recorder.blob;
+                                var audioUrl = URL.createObjectURL(audioBlob);
+                                recordedAudio = new Audio(audioUrl);
 
-                                yakamozLoop = true;
-                                yakamozProc = false;
-                                recordedAudio.addEventListener('ended', function () {
-                                    this.currentTime = 0;
-                                    recordedAudioMark = audioContext.currentTime;
-                                    if (yakamozLoop) this.play();
-                                }, false);
-                                recordedAudio.currentTime = 0;
-                                recordedAudioMark = audioContext.currentTime;
-                                recordedAudio.play();
+                                var reader = new window.FileReader();
+                                reader.readAsDataURL(audioBlob);
+                                reader.onloadend = function () {
+                                    var formData = new FormData();
+                                    formData.append('frameCount', frameCount);
+                                    formData.append('audio', reader.result);
+                                    formData.append('mood', JSON.stringify(
+                                        [
+                                            $("#emotion-00").val() * moodScale,
+                                            $("#emotion-01").val() * moodScale,
+                                            $("#emotion-02").val() * moodScale,
+                                            $("#emotion-03").val() * moodScale,
+                                            $("#emotion-04").val() * moodScale,
+                                            $("#emotion-05").val() * moodScale,
+                                            $("#emotion-06").val() * moodScale,
+                                            $("#emotion-07").val() * moodScale,
+                                            $("#emotion-08").val() * moodScale,
+                                            $("#emotion-09").val() * moodScale,
+                                            $("#emotion-10").val() * moodScale,
+                                            $("#emotion-11").val() * moodScale,
+                                            $("#emotion-12").val() * moodScale,
+                                            $("#emotion-13").val() * moodScale,
+                                            $("#emotion-14").val() * moodScale,
+                                            $("#emotion-15").val() * moodScale,
+                                        ]
+                                    ));
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "mask",
+                                        data: formData,
+                                        cache: false,
+                                        processData: false,
+                                        contentType: false,
+                                        enctype: 'multipart/form-data'
+                                    }).then(function (data) {
+                                        maskData = new Float32Array(JSON.parse(data));
+                                        // TODO
+                                        // maskData = zfpDecompress(JSON.parse(data));
 
-                                function resume() {
-                                    yakamozLoop = true;
-                                    recordedAudioMark = audioContext.currentTime - recordedAudio.currentTime;
-                                    recordedAudio.play();
-                                    document.getElementById('yakamozControls').innerHTML =
-                                        '<a class="avazDur">duraklat</a><br>[<a class="avazDur">pause</a>]';
-                                    $('a.avazDur').click(function (e) { e.preventDefault(); pause(); return false; });
-                                }
-                                function pause() {
-                                    yakamozLoop = false;
-                                    recordedAudio.pause();
-                                    document.getElementById('yakamozControls').innerHTML =
-                                        '<a class="avazDevamet">devam et</a> ya da <a class="avazKaydet">kaydet</a><br>[<a class="avazDevamet">resume</a> or <a class="avazKaydet">record</a>]';
-                                    $('a.avazDevamet').click(function (e) { e.preventDefault(); resume(); return false; });
-                                    $('a.avazKaydet').click(function (e) { e.preventDefault(); record(); return false; });
-                                }
-                                document.getElementById('yakamozControls').innerHTML =
-                                    '<a class="avazDur">duraklat</a><br>[<a class="avazDur">pause</a>]';
-                                $('a.avazDur').click(function (e) { e.preventDefault(); pause(); return false; });
+                                        yakamozLoop = true;
+                                        yakamozProc = false;
+                                        recordedAudio.addEventListener('ended', function () {
+                                            this.currentTime = 0;
+                                            recordedAudioMark = audioContext.currentTime;
+                                            if (yakamozLoop) this.play();
+                                        }, false);
+                                        recordedAudio.currentTime = 0;
+                                        recordedAudioMark = audioContext.currentTime;
+                                        recordedAudio.play();
+
+                                        function resume() {
+                                            yakamozLoop = true;
+                                            recordedAudioMark = audioContext.currentTime - recordedAudio.currentTime;
+                                            recordedAudio.play();
+                                            document.getElementById('yakamozControls').innerHTML =
+                                                '<a class="avazDur">duraklat</a><br>[<a class="avazDur">pause</a>]';
+                                            $('a.avazDur').click(function (e) { e.preventDefault(); pause(); return false; });
+                                        }
+                                        function pause() {
+                                            yakamozLoop = false;
+                                            recordedAudio.pause();
+                                            document.getElementById('yakamozControls').innerHTML =
+                                                '<a class="avazDevamet">devam et</a> ya da <a class="avazKaydet">kaydet</a><br>[<a class="avazDevamet">resume</a> or <a class="avazKaydet">record</a>]';
+                                            $('a.avazDevamet').click(function (e) { e.preventDefault(); resume(); return false; });
+                                            $('a.avazKaydet').click(function (e) { e.preventDefault(); record(); return false; });
+                                        }
+                                        document.getElementById('yakamozControls').innerHTML =
+                                            '<a class="avazDur">duraklat</a><br>[<a class="avazDur">pause</a>]';
+                                        $('a.avazDur').click(function (e) { e.preventDefault(); pause(); return false; });
+                                    });
+                                };
                             });
-                        };
-                    });
-                }, 1000 * loopSecs);
+                        }, 1000 * loopSecs);
+                    }
+                    countDownFrame = 4 - timeleft;
+                    document.getElementById("vaziyet").innerHTML = countDownFrames[countDownFrame];
+                    timeleft -= 1;
+                }, 1000);
             });
         }
         $('a.avazKaydet').click(function (e) { e.preventDefault(); record(); return false; });
@@ -330,7 +556,7 @@
             if (yakamozProc && audioContext != undefined) {
                 document.getElementById('vaziyet').innerHTML =
                     spinFrames[Math.floor(((audioContext.currentTime) * (animFPS / 5.)) % spinFrames.length)];
-            } else {
+            } else if (!yakamozCountDown) {
                 document.getElementById('vaziyet').innerHTML = '▛&nbsp;▙<br>▜&nbsp;▟';
             }
         }
