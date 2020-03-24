@@ -11,16 +11,17 @@ static bitstream* stream; /* bit stream to write to or read from */
 extern "C"
 {
     EMSCRIPTEN_KEEPALIVE
-    void* zfpHelper(unsigned char* compressedBytes, unsigned int bytesSize)
+    float* zfpHelper(unsigned char* compressedBytes, unsigned int bytesSize)
     {
         // HEAP STUFF
-        void* zfpBuffer = malloc(120 * 8320 * 3 * 4);
+        float* zfpBuffer = (float*)malloc(120 * 8320 * 3 * 4);
 
         // ZPF STUFF
 
         type = zfp_type_float;
         // math.ceil(4 * 29.97), 8320, 3 (framecount, vert count, dimension count)
-        field = zfp_field_3d(zfpBuffer, type, 120, 8320, 3);
+        // C vs Fortran ordering: https://github.com/LLNL/zfp/issues/91
+        field = zfp_field_3d(zfpBuffer, type, 3, 8320, 120);
         zfp = zfp_stream_open(NULL);
         stream = stream_open((void *)zfpBuffer, bytesSize);
         zfp_stream_set_bit_stream(zfp, stream);
@@ -44,6 +45,6 @@ extern "C"
         stream_close(stream);
         // js side frees zfpBuffer!
 
-        return (void*)zfpBuffer;
+        return (float*)zfpBuffer;
     }
 }
