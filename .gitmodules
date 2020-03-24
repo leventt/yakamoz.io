@@ -2,5 +2,5 @@
 	path = surat
 	url = https://github.com/leventt/surat.git
 [submodule "zfp"]
-	path = zfp
+	path = zfpHelper/zfp
 	url = https://github.com/LLNL/zfp.git
