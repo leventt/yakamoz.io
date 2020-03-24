@@ -317,17 +317,16 @@
     <script>
         var zfpHelper;
         Module.onRuntimeInitialized = _ => {
-            _zfpHelper = Module.cwrap('zfpHelper', 'number', ['string']);
+            _zfpHelper = Module.cwrap('zfpHelper', 'number', ['number', 'number']);
             zfpDecompress = function (data) {
-                console.log(data);
-                var bufferPtr = Module._malloc(data.length + 1);
-                Module.stringToUTF8(data, bufferPtr, 120 * 8320 * 3 * 4);
+                var bufferPtr = Module._malloc(data.length);
+                Module.stringToUTF8(data, bufferPtr, data.length);
 
-                var floatPtr = _zfpHelper(bufferPtr);
-
+                var floatPtr = _zfpHelper(bufferPtr, data.length);
                 Module._free(bufferPtr);
 
                 var floats = new Float32Array(Module.HEAPF32.buffer, floatPtr, 120 * 8320 * 3);
+                Module._free(floatPtr);
 
                 console.log(floats);
 
@@ -368,7 +367,7 @@
         var container, scene, camera, renderer, maskBufferGeo, maskMesh;
         var maskData;
 
-        var moodScale = 0.005;  // TODO
+        var moodScale = 0.005;
 
         var recordedAudioMark = 0;
 
@@ -499,9 +498,8 @@
                                         contentType: false,
                                         enctype: 'multipart/form-data'
                                     }).then(function (data) {
-                                        maskData = new Float32Array(JSON.parse(data));
-                                        // TODO
-                                        // maskData = zfpDecompress(JSON.parse(data));
+                                        maskData = zfpDecompress(data);
+                                        // maskData = new Float32Array(JSON.parse(data));
 
                                         yakamozLoop = true;
                                         yakamozProc = false;

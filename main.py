@@ -116,32 +116,21 @@ def mask():
     frameCount = int(float(request.forms.get('frameCount')))
     inferred = inference(frameCount, audio, mood)
 
-    return json.dumps(
-        json.loads(
-            json.dumps(inferred),
-            parse_float=lambda x: round(float(x), 4)
-        )
-    )
-    # TODO
+    # return json.dumps(
+    #     json.loads(
+    #         json.dumps(inferred),
+    #         parse_float=lambda x: round(float(x), 4)
+    #     )
+    # )
     if frameCount != 120:
-        raise
+        raise  # TODO
 
     compressed = zfpy.compress_numpy(
-        np.ascontiguousarray(inferred, dtype=np.float32).reshape(120, 8320, 3),
-        tolerance=0.001,
-        write_header=False
+        np.array(inferred).reshape(120, 8320, 3),
+        tolerance=0.0001,
     )
-    compressed = base64.b64encode(compressed)
-    # compressed = compressed[compressed.find('/')+1:]  # gets rid of the header
-    compressed = compressed.replace(
-        b'/', b'_'
-    )  # did the same on cxx side
-    inferredBytes = compressed.decode('utf-8')  # prep string
 
-    with open(os.path.expanduser('~/deneme.txt'), 'w') as fp:
-        fp.write(inferredBytes)
-
-    return json.dumps(inferredBytes)
+    return io.BytesIO(compressed)
 
 
 @route('/maskIndices')
