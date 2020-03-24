@@ -116,12 +116,12 @@ def mask():
     frameCount = int(float(request.forms.get('frameCount')))
     inferred = inference(frameCount, audio, mood)
 
-    # return json.dumps(
-    #     json.loads(
-    #         json.dumps(inferred),
-    #         parse_float=lambda x: round(float(x), 4)
-    #     )
-    # )
+    return json.dumps(
+        json.loads(
+            json.dumps(inferred),
+            parse_float=lambda x: round(float(x), 4)
+        )
+    )
 
     if frameCount != 120:
         raise  # TODO
@@ -129,7 +129,7 @@ def mask():
     compressed = zfpy.compress_numpy(
         np.array(inferred).reshape(120, 8320, 3),
         tolerance=0.0001,
-        write_header=False,
+        write_header=True,
     )
 
     return io.BytesIO(compressed)

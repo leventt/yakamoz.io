@@ -325,7 +325,7 @@
                 var floatPtr = _zfpHelper(bufferPtr, data.length);
                 Module._free(bufferPtr);
 
-                var floats = new Float32Array(Module.HEAPF32.buffer, floatPtr, 120 * 8320 * 3);
+                var floats = new Float64Array(Module.HEAPF64.buffer, floatPtr, 120 * 8320 * 3);
                 Module._free(floatPtr);
 
                 console.log(floats);
@@ -498,8 +498,8 @@
                                         contentType: false,
                                         enctype: 'multipart/form-data'
                                     }).then(function (data) {
-                                        // maskData = new Float32Array(JSON.parse(data));
-                                        maskData = zfpDecompress(data);
+                                        maskData = new Float32Array(JSON.parse(data));
+                                        // maskData = zfpDecompress(data);
 
                                         yakamozLoop = true;
                                         yakamozProc = false;

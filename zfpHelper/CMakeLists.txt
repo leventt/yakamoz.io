@@ -15,5 +15,5 @@ target_link_libraries(zfpHelper zfp)
 
 set_target_properties(
     zfpHelper PROPERTIES LINK_FLAGS
-    "-O2 --bind -s MAXIMUM_MEMORY=134217728 -s INITIAL_MEMORY -s INITIAL_MEMORY=67108864 -s -s ALLOW_MEMORY_GROWTH=1 -s EXTRA_EXPORTED_RUNTIME_METHODS=\"['zfpHelper', '_malloc', '_free', 'cwrap', 'lengthBytesUTF8', 'stringToUTF8']\""
+    "-O2 -s ALLOW_MEMORY_GROWTH=1 -s EXTRA_EXPORTED_RUNTIME_METHODS=\"['zfpHelper', '_malloc', '_free', 'cwrap', 'lengthBytesUTF8', 'stringToUTF8']\""
 )
