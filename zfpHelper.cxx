@@ -23,7 +23,7 @@ extern "C"
         type = zfp_type_float;
         // math.ceil(4 * 29.97), 8320, 3 (framecount, vert count, dimension count)
         // C vs Fortran ordering: https://github.com/LLNL/zfp/issues/91
-        field = zfp_field_3d(decompressed, type, 3, 8320, 120);
+        field = zfp_field_3d(decompressed, type, 120, 8320, 3);
         zfp = zfp_stream_open(NULL);
         stream = stream_open((void *)compressedBytes, bytesSize);
         zfp_stream_set_bit_stream(zfp, stream);
