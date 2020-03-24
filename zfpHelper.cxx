@@ -14,16 +14,18 @@ extern "C"
     float* zfpHelper(unsigned char* compressedBytes, unsigned int bytesSize)
     {
         // HEAP STUFF
-        float* zfpBuffer = (float*)malloc(120 * 8320 * 3 * 4);
+
+        // js side frees decompressed!
+        float* decompressed = (float*)malloc(120 * 8320 * 3);
 
         // ZPF STUFF
 
         type = zfp_type_float;
         // math.ceil(4 * 29.97), 8320, 3 (framecount, vert count, dimension count)
         // C vs Fortran ordering: https://github.com/LLNL/zfp/issues/91
-        field = zfp_field_3d(zfpBuffer, type, 3, 8320, 120);
+        field = zfp_field_3d(decompressed, type, 3, 8320, 120);
         zfp = zfp_stream_open(NULL);
-        stream = stream_open((void *)zfpBuffer, bytesSize);
+        stream = stream_open((void *)compressedBytes, bytesSize);
         zfp_stream_set_bit_stream(zfp, stream);
         // tolerance 0.001 matching server side python script called main.py
         zfp_stream_set_accuracy(zfp, 0.0001);
@@ -33,8 +35,6 @@ extern "C"
         zfp_stream_flush(zfp);
         zfp_stream_rewind(zfp);
 
-        FILE *fp = fmemopen((void*)compressedBytes, bytesSize, "r");
-        fread(zfpBuffer, 1, bytesSize, fp);
         if (!zfp_decompress(zfp, field))
             fprintf(stderr, "decompression failed\n");
 
@@ -43,8 +43,7 @@ extern "C"
         zfp_field_free(field);
         zfp_stream_close(zfp);
         stream_close(stream);
-        // js side frees zfpBuffer!
 
-        return (float*)zfpBuffer;
+        return (float*)decompressed;
     }
 }

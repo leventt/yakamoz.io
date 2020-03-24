@@ -498,8 +498,8 @@
                                         contentType: false,
                                         enctype: 'multipart/form-data'
                                     }).then(function (data) {
-                                        // maskData = zfpDecompress(data);
-                                        maskData = new Float32Array(JSON.parse(data));
+                                        // maskData = new Float32Array(JSON.parse(data));
+                                        maskData = zfpDecompress(data);
 
                                         yakamozLoop = true;
                                         yakamozProc = false;

@@ -116,14 +116,13 @@ def mask():
     frameCount = int(float(request.forms.get('frameCount')))
     inferred = inference(frameCount, audio, mood)
 
-    return json.dumps(
-        json.loads(
-            json.dumps(inferred),
-            parse_float=lambda x: round(float(x), 4)
-        )
-    )
+    # return json.dumps(
+    #     json.loads(
+    #         json.dumps(inferred),
+    #         parse_float=lambda x: round(float(x), 4)
+    #     )
+    # )
 
-    # TODO
     if frameCount != 120:
         raise  # TODO
 
