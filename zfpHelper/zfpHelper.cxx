@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string>
 #include <emscripten.h>
 #include <zfp.h>
 
@@ -10,7 +11,7 @@ static bitstream* stream; /* bit stream to write to or read from */
 extern "C"
 {
     EMSCRIPTEN_KEEPALIVE
-    float* zfpHelper(unsigned char* compressedBytes, unsigned int bytesSize)
+    float* zfpHelper(std::string compressedBytes, unsigned int bytesSize)
     {
         // HEAP STUFF
 
@@ -25,7 +26,7 @@ extern "C"
         zfp_field_set_pointer(field, decompressed);
 
         zfp = zfp_stream_open(NULL);
-        stream = stream_open((void *)compressedBytes, bytesSize);
+        stream = stream_open((void *)compressedBytes.c_str(), bytesSize);
         zfp_stream_set_bit_stream(zfp, stream);
 
         // DECOMPRESS ALL THE THINGS

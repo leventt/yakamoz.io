@@ -104,7 +104,7 @@ def inference(frameCount, audio, mood):
             torch.index_select(frames, 1, torch.LongTensor([1]))*-1
         ),
         dim=1
-    ).detach().numpy().flatten('C').tolist()
+    ).detach().numpy().reshape(120, 8320, 3).flatten('C').tolist()
 
     return frames
 
@@ -119,7 +119,7 @@ def mask():
     return json.dumps(
         json.loads(
             json.dumps(inferred),
-            parse_float=lambda x: round(float(x), 4)
+            parse_float=lambda x: round(float(x), 3)
         )
     )
 
@@ -132,6 +132,9 @@ def mask():
         tolerance=0.0001,
         write_header=True,
     )
+
+    with open('/Users/leventt/stub.bin', 'wb') as fp:
+        fp.write(compressed)
 
     return io.BytesIO(compressed)
 

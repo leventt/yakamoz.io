@@ -315,9 +315,9 @@
     </div>
     <script src="zfpHelper.js"></script>
     <script>
-        var zfpHelper;
+        var zfpDecompress;
         Module.onRuntimeInitialized = _ => {
-            _zfpHelper = Module.cwrap('zfpHelper', 'number', ['number', 'number']);
+            _zfpHelper = Module.cwrap('zfpHelper', 'number', ['string', 'number']);
             zfpDecompress = function (data) {
                 var bufferPtr = Module._malloc(data.length);
                 Module.stringToUTF8(data, bufferPtr, data.length);
@@ -497,6 +497,7 @@
                                         enctype: 'multipart/form-data'
                                     }).then(function (data) {
                                         maskData = new Float32Array(JSON.parse(data));
+                                        // TODO
                                         // maskData = zfpDecompress(data);
 
                                         yakamozLoop = true;
