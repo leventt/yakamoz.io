@@ -119,7 +119,7 @@ def mask():
     return json.dumps(
         json.loads(
             json.dumps(inferred),
-            parse_float=lambda x: round(float(x), 3)
+            parse_float=lambda x: round(float(x), 4)
         )
     )
 
@@ -132,9 +132,6 @@ def mask():
         tolerance=0.0001,
         write_header=True,
     )
-
-    with open('/Users/leventt/stub.bin', 'wb') as fp:
-        fp.write(compressed)
 
     return io.BytesIO(compressed)
 
