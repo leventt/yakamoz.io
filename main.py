@@ -123,11 +123,12 @@ def mask():
         )
     )
 
+    # TODO
     if frameCount != 120:
         raise  # TODO
 
     compressed = zfpy.compress_numpy(
-        np.array(inferred).reshape(120, 8320, 3),
+        np.array(inferred, dtype=np.float32).reshape(120, 8320, 3),
         tolerance=0.0001,
         write_header=True,
     )
@@ -148,6 +149,11 @@ def maskNeutral():
 @route('/')
 def index():
     return static_file('index.html', os.path.join(ROOT, 'static'))
+
+
+@app.route('/zfpHelper.wasm')
+def wasmStuff():
+    return static_file('zfpHelper.wasm', os.path.join(ROOT, 'static'), 'application/wasm')
 
 
 @route('/<staticFile>')

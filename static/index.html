@@ -325,10 +325,8 @@
                 var floatPtr = _zfpHelper(bufferPtr, data.length);
                 Module._free(bufferPtr);
 
-                var floats = new Float64Array(Module.HEAPF64.buffer, floatPtr, 120 * 8320 * 3);
+                var floats = new Float32Array(Module.HEAPF32.buffer, floatPtr, 120 * 8320 * 3);
                 Module._free(floatPtr);
-
-                console.log(floats);
 
                 return floats;
             };

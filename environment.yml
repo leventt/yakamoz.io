@@ -8,7 +8,6 @@ dependencies:
   - bjoern=3.0.1=py38ha1b3eb9_0
   - blas=1.0=mkl
   - bottle=0.12.17=py_0
-  - brotli=1.0.7=h0a44026_0
   - c-ares=1.15.0=h1de35cc_1001
   - ca-certificates=2020.1.1=0
   - certifi=2019.11.28=py38_1

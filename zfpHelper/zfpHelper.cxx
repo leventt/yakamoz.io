@@ -10,12 +10,12 @@ static bitstream* stream; /* bit stream to write to or read from */
 extern "C"
 {
     EMSCRIPTEN_KEEPALIVE
-    double* zfpHelper(unsigned char* compressedBytes, unsigned int bytesSize)
+    float* zfpHelper(unsigned char* compressedBytes, unsigned int bytesSize)
     {
         // HEAP STUFF
 
         // js side frees decompressed!
-        double* decompressed = (double*)malloc(120 * 8320 * 3 * 8);
+        float* decompressed = (float*)malloc(120 * 8320 * 3 * 8);
 
         // ZPF STUFF
 
@@ -42,6 +42,6 @@ extern "C"
         zfp_stream_close(zfp);
         stream_close(stream);
 
-        return (double*)decompressed;
+        return (float*)decompressed;
     }
 }
