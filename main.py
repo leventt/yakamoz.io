@@ -62,26 +62,23 @@ def inference(frameCount, audio, mood):
     )
 
     inputValues = torch.Tensor([])
+    audioFrameLen = 266240
+    if waveform.size()[1] < audioFrameLen:
+        raise  # TODO
+    audioHalfFrameLen = 133120
     for i in range(frameCount):
-        # (.256 * 16000 * (64 + 1)) / 2.
-        audioFrameLen = 266240
-        audioHalfFrameLen = 133120
         audioRoll = -1 * (int(waveform.size()[1] / frameCount) - audioHalfFrameLen)
         audioIdxRoll = int(i * audioRoll)
 
         inputValues = torch.cat(
             (
                 inputValues,
-                torch.cat(
-                    (
-                        LPC(
-                            torch.roll(waveform[0:1, :], audioIdxRoll, dims=0)[:, :audioFrameLen]
-                        ).view(1, 1, 64, 32)
-                    ),
-                    dim=0,
-                ).view(2, 1, 64, 32)
+                LPC(
+                    torch.roll(waveform[0:1, :], audioIdxRoll, dims=0)[:, :audioFrameLen]
+                ).view(1, 1, 64, 32)
             ), dim=0
         ).view(-1, 1, 64, 32)
+
     inputValues = inputValues.view(-1, 1, 64, 32)
 
     randomMoodRoll = random.randint(
@@ -94,7 +91,7 @@ def inference(frameCount, audio, mood):
             tracedScript.mood,
             (randomMoodRoll * -1),
             dims=0,
-        )[:120, :].view(frameCount * 16)
+        )[:frameCount, :].view(frameCount * 16)
     ).view(-1, 3) * 2.
     # blender has a different coordinate system than three.js
     frames = torch.cat(
@@ -104,7 +101,7 @@ def inference(frameCount, audio, mood):
             torch.index_select(frames, 1, torch.LongTensor([1]))*-1
         ),
         dim=1
-    ).detach().numpy().reshape(120, 8320, 3).flatten('C').tolist()
+    ).detach().numpy().reshape(frameCount, 8320, 3).flatten('C').tolist()
 
     return frames
 
@@ -128,7 +125,7 @@ def mask():
         raise  # TODO
 
     compressed = zfpy.compress_numpy(
-        np.array(inferred, dtype=np.float32).reshape(120, 8320, 3),
+        np.array(inferred, dtype=np.float32).reshape(frameCount, 8320, 3),
         tolerance=0.0001,
         write_header=True,
     )

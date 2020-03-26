@@ -325,6 +325,7 @@
                 var floatPtr = _zfpHelper(bufferPtr, data.length);
                 Module._free(bufferPtr);
 
+                // TODO
                 var floats = new Float32Array(Module.HEAPF32.buffer, floatPtr, 120 * 8320 * 3);
                 Module._free(floatPtr);
 
@@ -347,7 +348,7 @@
         var yakamozCountDown = false;
         var yakamozRecording = false;
 
-        var loopSecs = 4;
+        var loopSecs = 17;
         var animFPS = 29.97;
         var frameNum = 0;
         var frameCount = Math.ceil(loopSecs * animFPS);
