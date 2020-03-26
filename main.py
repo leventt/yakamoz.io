@@ -7,7 +7,6 @@ import base64
 import io
 import tempfile
 import numpy as np
-import zfpy
 import bottle
 from bottle import run
 from bottle import route
@@ -56,16 +55,14 @@ def inference(frameCount, audio, mood):
     
     LPC = lpc.LPCCoefficients(
         sampleRate,
-        .512,
+        .032,
         .5,
         order=31  # 32 - 1
     )
 
     inputValues = torch.Tensor([])
-    audioFrameLen = 266240
-    if waveform.size()[1] < audioFrameLen:
-        raise  # TODO
-    audioHalfFrameLen = 133120
+    audioFrameLen = .016 * 16000 * (64 + 1)
+    audioHalfFrameLen = audioFrameLen / 2.
     for i in range(frameCount):
         audioRoll = -1 * (int(waveform.size()[1] / frameCount) - audioHalfFrameLen)
         audioIdxRoll = int(i * audioRoll)
@@ -119,18 +116,6 @@ def mask():
             parse_float=lambda x: round(float(x), 4)
         )
     )
-
-    # TODO
-    if frameCount != 120:
-        raise  # TODO
-
-    compressed = zfpy.compress_numpy(
-        np.array(inferred, dtype=np.float32).reshape(frameCount, 8320, 3),
-        tolerance=0.0001,
-        write_header=True,
-    )
-
-    return io.BytesIO(compressed)
 
 
 @route('/maskIndices')

@@ -313,26 +313,6 @@
             </blockquote>
         </div>
     </div>
-    <script src="zfpHelper.js"></script>
-    <script>
-        var zfpDecompress;
-        Module.onRuntimeInitialized = _ => {
-            _zfpHelper = Module.cwrap('zfpHelper', 'number', ['string', 'number']);
-            zfpDecompress = function (data) {
-                var bufferPtr = Module._malloc(data.length);
-                Module.stringToUTF8(data, bufferPtr, data.length);
-
-                var floatPtr = _zfpHelper(bufferPtr, data.length);
-                Module._free(bufferPtr);
-
-                // TODO
-                var floats = new Float32Array(Module.HEAPF32.buffer, floatPtr, 120 * 8320 * 3);
-                Module._free(floatPtr);
-
-                return floats;
-            };
-        };
-    </script>
     <script src="jquery-3.4.1.min.js"></script>
     <script src="jquery-ui.min.js"></script>
     <script src="meyda.js"></script>
@@ -348,7 +328,7 @@
         var yakamozCountDown = false;
         var yakamozRecording = false;
 
-        var loopSecs = 17;
+        var loopSecs = 4;
         var animFPS = 29.97;
         var frameNum = 0;
         var frameCount = Math.ceil(loopSecs * animFPS);
@@ -498,8 +478,6 @@
                                         enctype: 'multipart/form-data'
                                     }).then(function (data) {
                                         maskData = new Float32Array(JSON.parse(data));
-                                        // TODO
-                                        // maskData = zfpDecompress(data);
 
                                         yakamozLoop = true;
                                         yakamozProc = false;
