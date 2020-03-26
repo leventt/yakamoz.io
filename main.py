@@ -16,6 +16,7 @@ from bottle import request
 from bottle import static_file
 from indices import indices
 from neutral import neutral
+from importlib.machinery import SourceFileLoader
 
 
 app = bottle.default_app()
@@ -25,6 +26,14 @@ ROOT = os.path.expanduser('~/sandbox/yakamoz.io/')
 if not os.path.exists(ROOT):
     ROOT = os.path.dirname(__file__)
 tracedScriptPath = os.path.join(ROOT, 'yakamoz.pt')
+
+
+lpc = SourceFileLoader(
+    'lpc',
+    os.path.join(
+        ROOT, 'surat', 'LPCTorch/lpctorch/lpc.py'
+    )
+).load_module()
 
 
 def inference(frameCount, audio, mood):
@@ -44,48 +53,42 @@ def inference(frameCount, audio, mood):
     if sampleRate != 16000:
         waveform = torchaudio.transforms.Resample(sampleRate, 16000)(waveform)
         sampleRate = 16000
-
-    MFCC = torchaudio.compliance.kaldi.mfcc(
-        waveform,
-        channel=0,
-        remove_dc_offset=True,
-        window_type='hanning',
-        num_ceps=32,
-        num_mel_bins=64,
-        frame_length=256,
-        frame_shift=32
+    
+    LPC = lpc.LPCCoefficients(
+        sampleRate,
+        .512,
+        .5,
+        order=31  # 32 - 1
     )
-    MFCCLen = MFCC.size()[0]
 
-    allMFCC = torch.Tensor([])
+    inputValues = torch.Tensor([])
     for i in range(frameCount):
-        audioIdxRoll = int(i * (MFCCLen / frameCount))
-        allMFCC = torch.cat(
+        # (.256 * 16000 * (64 + 1)) / 2.
+        audioFrameLen = 266240
+        audioHalfFrameLen = 133120
+        audioRoll = -1 * (int(waveform.size()[1] / frameCount) - audioHalfFrameLen)
+        audioIdxRoll = int(i * audioRoll)
+
+        inputValues = torch.cat(
             (
-                allMFCC,
+                inputValues,
                 torch.cat(
                     (
-                        torch.roll(
-                            MFCC,
-                            (audioIdxRoll * -1) + 32,
-                            dims=0,
-                        )[:32],
-                        torch.roll(
-                            MFCC,
-                            (audioIdxRoll * -1),
-                            dims=0,
-                        )[:32],
+                        LPC(
+                            torch.roll(waveform[0:1, :], audioIdxRoll, dims=0)[:, :audioFrameLen]
+                        ).view(1, 1, 64, 32)
                     ),
                     dim=0,
-                ).view(1, 1, 64, 32)
-            )
-        )
+                ).view(2, 1, 64, 32)
+            ), dim=0
+        ).view(-1, 1, 64, 32)
+    inputValues = inputValues.view(-1, 1, 64, 32)
 
     randomMoodRoll = random.randint(
         0, tracedScript.mood.size()[0] - frameCount
     )
     frames = tracedScript(
-        allMFCC.view(-1, 1, 64, 32),
+        inputValues,
         torch.Tensor(mood).float().repeat(frameCount) *
         torch.roll(
             tracedScript.mood,
