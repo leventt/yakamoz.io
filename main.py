@@ -45,9 +45,6 @@ def inference(frameCount, audio, mood):
         waveform = torchaudio.transforms.Resample(sampleRate, 16000)(waveform)
         sampleRate = 16000
 
-    # remove DC component
-    waveform -= torch.mean(waveform)
-
     MFCC = torchaudio.compliance.kaldi.mfcc(
         waveform,
         channel=0,
