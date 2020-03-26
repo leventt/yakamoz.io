@@ -52,7 +52,7 @@ def inference(frameCount, audio, mood):
     if sampleRate != 16000:
         waveform = torchaudio.transforms.Resample(sampleRate, 16000)(waveform)
         sampleRate = 16000
-    
+
     LPC = lpc.LPCCoefficients(
         sampleRate,
         .032,
@@ -61,8 +61,8 @@ def inference(frameCount, audio, mood):
     )
 
     inputValues = torch.Tensor([])
-    audioFrameLen = .016 * 16000 * (64 + 1)
-    audioHalfFrameLen = audioFrameLen / 2.
+    audioFrameLen = int(.016 * 16000 * (64 + 1))
+    audioHalfFrameLen = int(audioFrameLen / 2.)
     for i in range(frameCount):
         audioRoll = -1 * (int(waveform.size()[1] / frameCount) - audioHalfFrameLen)
         audioIdxRoll = int(i * audioRoll)
