@@ -169,6 +169,7 @@ class PreviewWindow(mglw.WindowConfig):
             tracedScript = torch.jit.load(tracedScriptPath)
             tracedScript.eval()
 
+        self.prevFrame = -1
         self.frame = 0
         self.frameCount = len(validationData)
         inputValues = torch.Tensor([])
@@ -306,7 +307,9 @@ class PreviewWindow(mglw.WindowConfig):
 
         self.frame = int(time * 29.97)
         self.frame = self.frame % self.frameCount
-        self.vbo.write(self.frames[self.frame].tobytes())
+        if self.frame != self.prevFrame:
+            self.vbo.write(self.frames[self.frame].tobytes())
+        self.prevFrame = self.frame
 
         if self.camera.navigating or self.camera.init:
             self.projection.write(
