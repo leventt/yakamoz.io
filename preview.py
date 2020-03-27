@@ -9,10 +9,20 @@ from pyrr import Vector3
 from pyrr import vector
 from neutral import neutral
 from indices import indices
+from importlib.machinery import SourceFileLoader
+from main import ROOT
+import torch
 
 
 indices = (np.array(indices) - 1)
 neutral = np.array(neutral)
+
+
+surat = SourceFileLoader(
+    'surat',
+    os.path.join(ROOT, 'surat/surat.py')
+).load_module()
+surat.DEVICE = torch.device('cpu')
 
 
 def normalize(a, axis=-1, order=2):
@@ -141,6 +151,14 @@ class PreviewWindow(mglw.WindowConfig):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
+        validationData = surat.Data(
+            validationAudioPath=os.path.join(
+                ROOT,
+                'data',
+                'validation.wav'
+            )
+        )
 
         self.prog = self.ctx.program(
             vertex_shader='''

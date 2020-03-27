@@ -5,3 +5,4 @@ checkpoint
 .my*
 build
 .vscode*
+*data*
