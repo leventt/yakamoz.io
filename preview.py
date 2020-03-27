@@ -224,6 +224,7 @@ class PreviewWindow(mglw.WindowConfig):
             in vec3 vPosition[];
             uniform mat4 view;
             out vec3 gNormal;
+            out vec3 gBarycentric;
             out vec3 gPosition;
             void main()
             {
@@ -233,10 +234,13 @@ class PreviewWindow(mglw.WindowConfig):
                 );
                 gNormal = normalize(transpose(inverse(mat3(view))) * flatNormal);
                 gPosition = vPosition[0];
+                gBarycentric = vec3(1, 0, 0);
                 gl_Position = gl_in[0].gl_Position; EmitVertex();
                 gPosition = vPosition[1];
+                gBarycentric = vec3(0, 1, 0);
                 gl_Position = gl_in[1].gl_Position; EmitVertex();
                 gPosition = vPosition[2];
+                gBarycentric = vec3(0, 0, 1);
                 gl_Position = gl_in[2].gl_Position; EmitVertex();
                 EndPrimitive();
             }
@@ -245,16 +249,21 @@ class PreviewWindow(mglw.WindowConfig):
             #version 410 core
             in vec3 gPosition;
             in vec3 gNormal;
+            in vec3 gBarycentric;
             uniform mat4 view;
             uniform sampler2D matcap;
             out vec4 fragColor;
             void main()
             {
-                vec3 r = reflect(normalize(view * vec4(gPosition, 1.)).xyz, gNormal);
-                float m = 2. * sqrt(pow(r.x, 2.) + pow(r.y, 2.) + pow(r.z + 1., 2.));
-                vec2 matcapUV = r.xy / m + .5;
-                vec3 color = texture(matcap, matcapUV.xy).xyz;
-                fragColor = vec4(color, 1.);
+                if(gBarycentric.x < 0.01 || gBarycentric.y < 0.01 || gBarycentric.z < 0.01) {
+                    fragColor = vec4(0.0, 0.0, 0.0, 1.0);
+                } else {
+                    vec3 r = reflect(normalize(view * vec4(gPosition, 1.)).xyz, gNormal);
+                    float m = 2. * sqrt(pow(r.x, 2.) + pow(r.y, 2.) + pow(r.z + 1., 2.));
+                    vec2 matcapUV = r.xy / m + .5;
+                    vec3 color = texture(matcap, matcapUV.xy).xyz;
+                    fragColor = vec4(color, 1.);
+                }
             }
             '''
         )
