@@ -41,6 +41,7 @@ def inference(frameCount, audio, mood):
         return
     else:
         tracedScript = torch.jit.load(tracedScriptPath)
+        tracedScript.eval()
 
     tokens = audio.split(';base64,')
     audio = tokens[1]

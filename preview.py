@@ -1,4 +1,6 @@
+import time
 import os
+import random
 import math
 import numpy as np
 import moderngl
@@ -11,6 +13,7 @@ from neutral import neutral
 from indices import indices
 from importlib.machinery import SourceFileLoader
 from main import ROOT
+from main import tracedScriptPath
 import torch
 
 
@@ -160,6 +163,46 @@ class PreviewWindow(mglw.WindowConfig):
             )
         )
 
+        if not os.path.exists(tracedScriptPath):
+            print('torch script not found')
+        else:
+            tracedScript = torch.jit.load(tracedScriptPath)
+            tracedScript.eval()
+
+        self.frame = 0
+        self.frameCount = len(validationData)
+        inputValues = torch.Tensor([])
+        for _, inputValue, _ in validationData:
+            inputValues = torch.cat(
+                (
+                    inputValues,
+                    inputValue
+                ),
+                dim=1
+            )
+        inputValues = inputValues.view(self.frameCount, 1, 64, 32)
+
+        randomMoodRoll = random.randint(
+            0, tracedScript.mood.size()[0] - self.frameCount
+        )
+        frames = tracedScript(
+            inputValues,
+            torch.roll(
+                tracedScript.mood,
+                (randomMoodRoll * -1),
+                dims=0,
+            )[:self.frameCount, :].view(self.frameCount * 16)
+        ).view(-1, 3) * 2.
+        # blender has a different coordinate system
+        self.frames = torch.cat(
+            (
+                torch.index_select(frames, 1, torch.LongTensor([0])),
+                torch.index_select(frames, 1, torch.LongTensor([2])),
+                torch.index_select(frames, 1, torch.LongTensor([1]))*-1
+            ),
+            dim=1
+        ).detach().numpy().reshape(self.frameCount, 8320 * 3).astype(np.float32)
+
         self.prog = self.ctx.program(
             vertex_shader='''
             #version 410 core
@@ -257,9 +300,13 @@ class PreviewWindow(mglw.WindowConfig):
     def mouse_scroll_event(self, dx, dy):
         self.camera.mouseScrollEvent((dx ** 2. + dy ** 2.) ** .5)
 
-    def render(self, time, frame_time):
+    def render(self, time, frameTime):
         self.ctx.clear(.18, .18, .18)
         self.ctx.enable(moderngl.DEPTH_TEST)
+
+        self.frame = int(time * 29.97)
+        self.frame = self.frame % self.frameCount
+        self.vbo.write(self.frames[self.frame].tobytes())
 
         if self.camera.navigating or self.camera.init:
             self.projection.write(
