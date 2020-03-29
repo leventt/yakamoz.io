@@ -2,6 +2,7 @@ import os
 import torch
 from main import ROOT
 from importlib.machinery import SourceFileLoader
+import glob
 
 
 if __name__ == '__main__':
@@ -16,6 +17,14 @@ if __name__ == '__main__':
         'checkpoint',
         'checkpoint.pth'
     )
+
+    MODEL_CP_PATH = glob.glob('/home/leventt/sandbox/surat/model/*/*.pth')
+    MODEL_CP_PATH = max(MODEL_CP_PATH, key=os.path.getctime)
+    print(MODEL_CP_PATH)
+    print(MODEL_CP_PATH)
+    print(MODEL_CP_PATH)
+    print(MODEL_CP_PATH)
+    print(MODEL_CP_PATH)
 
     model = surat.Model(25634)  # TODO
     model.load_state_dict(torch.load(
