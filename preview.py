@@ -54,7 +54,7 @@ class Camera():
         self.RMB = False
         self.MOD = False
         self.MOD1 = False
-    
+
     def cameraPosition(self):
         height = math.cos(self.phi) * self.radius
         distance = math.sin(self.phi) * self.radius
@@ -255,7 +255,7 @@ class PreviewWindow(mglw.WindowConfig):
             out vec4 fragColor;
             void main()
             {
-                if(gBarycentric.x < 0.01 || gBarycentric.y < 0.01 || gBarycentric.z < 0.01) {
+                if(gBarycentric.x < 0.1 || gBarycentric.y < 0.1 || gBarycentric.z < 0.1) {
                     fragColor = vec4(0.0, 0.0, 0.0, 1.0);
                 } else {
                     vec3 r = reflect(normalize(view * vec4(gPosition, 1.)).xyz, gNormal);
@@ -292,7 +292,7 @@ class PreviewWindow(mglw.WindowConfig):
             self.camera.MOD1 = True
         elif key == self.wnd.keys.X and action == self.wnd.keys.ACTION_RELEASE:
             self.camera.MOD1 = False
-    
+
     def mouse_drag_event(self, x, y, dx, dy):
         self.camera.LMB = False
         self.camera.MMB = False
