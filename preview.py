@@ -45,7 +45,7 @@ class Camera():
         self.radius = 8.
         self.upsign = 1.
         self.target = np.array([0., 0., 0.], np.float32)
-        self.orbit(math.radians(0), math.radians(0))
+        self.orbit(math.radians(-25), math.radians(0))
         self.navigating = False
         self.init = True
 
@@ -147,7 +147,7 @@ class PreviewWindow(mglw.WindowConfig):
     title = "yakamoz.io"
     window_size = (864, 486)
     aspect_ratio = 16 / 9
-    resizable = False
+    resizable = True
     samples = 4
 
     resource_dir = os.path.normpath(os.path.dirname(__file__))
@@ -255,7 +255,7 @@ class PreviewWindow(mglw.WindowConfig):
             out vec4 fragColor;
             void main()
             {
-                if(gBarycentric.x < 0.1 || gBarycentric.y < 0.1 || gBarycentric.z < 0.1) {
+                if(gBarycentric.x < 0.1 || gBarycentric.y < 0.001 || gBarycentric.z < 0.001) {
                     fragColor = vec4(0.0, 0.0, 0.0, 1.0);
                 } else {
                     vec3 r = reflect(normalize(view * vec4(gPosition, 1.)).xyz, gNormal);
